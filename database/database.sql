@@ -30,3 +30,17 @@ CREATE TABLE students (
         ON UPDATE CASCADE
         ON DELETE RESTRICT
 );
+
+CREATE TABLE sessions (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_name VARCHAR(20) NOT NULL UNIQUE
+);
+
+INSERT INTO sessions (session_name)
+VALUES
+('2021-22'),
+('2022-23'),
+('2023-24'),
+('2024-25'),
+('2025-26'),
+('2026-27');
