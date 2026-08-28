@@ -44,3 +44,19 @@ VALUES
 ('2024-25'),
 ('2025-26'),
 ('2026-27');
+
+CREATE TABLE semesters (
+    semester_id INT AUTO_INCREMENT PRIMARY KEY,
+    semester_name VARCHAR(50) NOT NULL UNIQUE
+);
+
+INSERT INTO semesters (semester_name)
+VALUES
+('1st Semester'),
+('2nd Semester'),
+('3rd Semester'),
+('4th Semester'),
+('5th Semester'),
+('6th Semester'),
+('7th Semester'),
+('8th Semester');
