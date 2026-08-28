@@ -72,3 +72,16 @@ VALUES
 ('6th Semester'),
 ('7th Semester'),
 ('8th Semester');
+
+CREATE TABLE registrations (
+    registration_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    registration_type VARCHAR(50) NOT NULL,
+    status ENUM('Pending', 'Approved', 'Rejected') DEFAULT 'Pending',
+
+    FOREIGN KEY (student_id)
+        REFERENCES students(student_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
