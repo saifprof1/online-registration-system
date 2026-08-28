@@ -85,3 +85,13 @@ CREATE TABLE registrations (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
+
+CREATE TABLE admins (
+    admin_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    full_name VARCHAR(100) NOT NULL
+);
+
+INSERT INTO admins (username, password, full_name)
+VALUES ('admin', 'admin123', 'System Administrator');
