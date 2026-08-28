@@ -24,9 +24,21 @@ CREATE TABLE students (
     email VARCHAR(100),
     address TEXT,
     department_id INT NOT NULL,
+    session_id INT NOT NULL,
+    semester_id INT NOT NULL,
 
     FOREIGN KEY (department_id)
         REFERENCES departments(department_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    FOREIGN KEY (session_id)
+        REFERENCES sessions(session_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    FOREIGN KEY (semester_id)
+        REFERENCES semesters(semester_id)
         ON UPDATE CASCADE
         ON DELETE RESTRICT
 );
