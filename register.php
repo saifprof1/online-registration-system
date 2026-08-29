@@ -57,6 +57,58 @@
 
         <br><br>
 
+                <h2>Academic Information</h2>
+
+        <label for="student_id">Student ID:</label><br>
+        <input type="text" id="student_id" name="student_id" required>
+        <br><br>
+
+        <label for="department_id">Department:</label><br>
+        <select id="department_id" name="department_id" required>
+            <option value="">-- Select Department --</option>
+            <option value="1">ICT</option>
+            <option value="2">CSE</option>
+            <option value="3">DBA</option>
+        </select>
+        <br><br>
+
+        <label for="session_id">Session:</label><br>
+        <select id="session_id" name="session_id" required>
+            <option value="">-- Select Session --</option>
+            <option value="1">2021-22</option>
+            <option value="2">2022-23</option>
+            <option value="3">2023-24</option>
+            <option value="4">2024-25</option>
+            <option value="5">2025-26</option>
+            <option value="6">2026-27</option>
+        </select>
+        <br><br>
+
+        <label for="semester_id">Semester:</label><br>
+        <select id="semester_id" name="semester_id" required>
+            <option value="">-- Select Semester --</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+        </select>
+        <br><br>
+
+        <h2>Registration Information</h2>
+
+        <label for="registration_type">Registration Type:</label><br>
+        <select id="registration_type" name="registration_type" required>
+            <option value="">-- Select Type --</option>
+            <option value="General">General</option>
+            <option value="Event">Event</option>
+            <option value="Workshop">Workshop</option>
+        </select>
+        <br><br>
+
         <button type="submit">Next</button>
 
     </form>
