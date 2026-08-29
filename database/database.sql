@@ -14,7 +14,7 @@ VALUES
 ('DBA');
 
 CREATE TABLE students (
-    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id VARCHAR(50) PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
     father_name VARCHAR(100) NOT NULL,
     mother_name VARCHAR(100) NOT NULL,
@@ -75,7 +75,7 @@ VALUES
 
 CREATE TABLE registrations (
     registration_id INT AUTO_INCREMENT PRIMARY KEY,
-    student_id INT NOT NULL,
+    student_id VARCHAR(50) NOT NULL,
     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     registration_type VARCHAR(50) NOT NULL,
     status ENUM('Pending', 'Approved', 'Rejected') DEFAULT 'Pending',

@@ -1,5 +1,7 @@
 <?php
 
+require_once "config/database.php";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $full_name = $_POST['full_name'];
@@ -16,16 +18,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $session_id = $_POST['session_id'];
     $semester_id = $_POST['semester_id'];
 
-    $registration_type = $_POST['registration_type'];
+    $sql = "INSERT INTO students
+            (student_id, full_name, father_name, mother_name,
+             date_of_birth, gender, phone, email, address,
+             department_id, session_id, semester_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    echo "<h2>Form Data Received Successfully!</h2>";
+    $stmt = $conn->prepare($sql);
 
-    echo "Name: " . $full_name . "<br>";
-    echo "Student ID: " . $student_id . "<br>";
-    echo "Department ID: " . $department_id . "<br>";
-    echo "Session ID: " . $session_id . "<br>";
-    echo "Semester ID: " . $semester_id . "<br>";
-    echo "Registration Type: " . $registration_type . "<br>";
+    $stmt->bind_param(
+    "ssssssssiiii",
+        $student_id,
+        $full_name,
+        $father_name,
+        $mother_name,
+        $date_of_birth,
+        $gender,
+        $phone,
+        $email,
+        $address,
+        $department_id,
+        $session_id,
+        $semester_id
+    );
+
+    if ($stmt->execute()) {
+        echo "<h2>Student data saved successfully!</h2>";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $conn->close();
 }
 
 ?>
