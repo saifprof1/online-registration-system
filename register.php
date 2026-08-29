@@ -3,6 +3,7 @@
 require_once "config/database.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $conn->begin_transaction();
 
     $full_name = $_POST['full_name'];
     $father_name = $_POST['father_name'];
@@ -61,8 +62,12 @@ if (empty($registration_type)) {
     );
 
     if ($registration_stmt->execute()) {
-        echo "<h2>Registration successful!</h2>";
-    } else {
+
+    $conn->commit();
+
+    echo "<h2>Registration successful!</h2>";
+
+} else {
         echo "Registration Error: " . $registration_stmt->error;
     }
 
