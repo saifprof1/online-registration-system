@@ -1,3 +1,35 @@
+<?php
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $full_name = $_POST['full_name'];
+    $father_name = $_POST['father_name'];
+    $mother_name = $_POST['mother_name'];
+    $date_of_birth = $_POST['date_of_birth'];
+    $gender = $_POST['gender'];
+    $phone = $_POST['phone'];
+    $email = $_POST['email'];
+    $address = $_POST['address'];
+
+    $student_id = $_POST['student_id'];
+    $department_id = $_POST['department_id'];
+    $session_id = $_POST['session_id'];
+    $semester_id = $_POST['semester_id'];
+
+    $registration_type = $_POST['registration_type'];
+
+    echo "<h2>Form Data Received Successfully!</h2>";
+
+    echo "Name: " . $full_name . "<br>";
+    echo "Student ID: " . $student_id . "<br>";
+    echo "Department ID: " . $department_id . "<br>";
+    echo "Session ID: " . $session_id . "<br>";
+    echo "Semester ID: " . $semester_id . "<br>";
+    echo "Registration Type: " . $registration_type . "<br>";
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
