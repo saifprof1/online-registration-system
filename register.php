@@ -17,6 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $department_id = $_POST['department_id'];
     $session_id = $_POST['session_id'];
     $semester_id = $_POST['semester_id'];
+    $registration_type = $_POST['registration_type'] ?? '';
+
+if (empty($registration_type)) {
+    die("Please select a registration type.");
+}
 
     $sql = "INSERT INTO students
             (student_id, full_name, father_name, mother_name,
@@ -43,10 +48,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     );
 
     if ($stmt->execute()) {
-        echo "<h2>Student data saved successfully!</h2>";
+    $registration_sql = "INSERT INTO registrations
+                         (student_id, registration_type)
+                         VALUES (?, ?)";
+
+    $registration_stmt = $conn->prepare($registration_sql);
+
+    $registration_stmt->bind_param(
+        "ss",
+        $student_id,
+        $registration_type
+    );
+
+    if ($registration_stmt->execute()) {
+        echo "<h2>Registration successful!</h2>";
     } else {
-        echo "Error: " . $stmt->error;
+        echo "Registration Error: " . $registration_stmt->error;
     }
+
+    $registration_stmt->close();
+
+} else {
+
+    if ($stmt->errno == 1062) {
+        echo "<h2>Registration Failed</h2>";
+        echo "<p>This Student ID is already registered.</p>";
+    } else {
+        echo "Student Error: " . $stmt->error;
+    }
+}
 
     $stmt->close();
     $conn->close();
