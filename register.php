@@ -156,11 +156,23 @@ if (empty($registration_type)) {
 
         <label for="department_id">Department:</label><br>
         <select id="department_id" name="department_id" required>
-            <option value="">-- Select Department --</option>
-            <option value="1">ICT</option>
-            <option value="2">CSE</option>
-            <option value="3">DBA</option>
-        </select>
+    <option value="">-- Select Department --</option>
+
+    <?php
+    $department_query = "SELECT department_id, department_name
+                         FROM departments
+                         ORDER BY department_name";
+
+    $department_result = $conn->query($department_query);
+
+    while ($department = $department_result->fetch_assoc()) {
+        echo "<option value='" . $department['department_id'] . "'>"
+             . htmlspecialchars($department['department_name'])
+             . "</option>";
+    }
+    ?>
+
+</select>
         <br><br>
 
         <label for="session_id">Session:</label><br>
