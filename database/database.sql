@@ -95,3 +95,6 @@ CREATE TABLE admins (
 
 INSERT INTO admins (username, password, full_name)
 VALUES ('admin', 'admin123', 'System Administrator');
+
+INSERT INTO departments (department_name)
+VALUES ('EEE');
