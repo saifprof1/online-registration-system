@@ -221,11 +221,23 @@ if (empty($registration_type)) {
 
         <label for="registration_type">Registration Type:</label><br>
         <select id="registration_type" name="registration_type" required>
-            <option value="">-- Select Type --</option>
-            <option value="General">General</option>
-            <option value="Event">Event</option>
-            <option value="Workshop">Workshop</option>
-        </select>
+    <option value="">-- Select Registration Type --</option>
+
+    <?php
+    $registration_types = [
+        "General",
+        "Event",
+        "Workshop"
+    ];
+
+    foreach ($registration_types as $type) {
+        echo "<option value='" . htmlspecialchars($type) . "'>"
+             . htmlspecialchars($type)
+             . "</option>";
+    }
+    ?>
+
+</select>
         <br><br>
 
         <button type="submit">Next</button>
