@@ -177,14 +177,23 @@ if (empty($registration_type)) {
 
         <label for="session_id">Session:</label><br>
         <select id="session_id" name="session_id" required>
-            <option value="">-- Select Session --</option>
-            <option value="1">2021-22</option>
-            <option value="2">2022-23</option>
-            <option value="3">2023-24</option>
-            <option value="4">2024-25</option>
-            <option value="5">2025-26</option>
-            <option value="6">2026-27</option>
-        </select>
+    <option value="">-- Select Session --</option>
+
+    <?php
+    $session_query = "SELECT session_id, session_name
+                      FROM sessions
+                      ORDER BY session_name";
+
+    $session_result = $conn->query($session_query);
+
+    while ($session = $session_result->fetch_assoc()) {
+        echo "<option value='" . $session['session_id'] . "'>"
+             . htmlspecialchars($session['session_name'])
+             . "</option>";
+    }
+    ?>
+
+</select>
         <br><br>
 
         <label for="semester_id">Semester:</label><br>
