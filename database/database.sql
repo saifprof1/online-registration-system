@@ -98,3 +98,9 @@ VALUES ('admin', 'admin123', 'System Administrator');
 
 INSERT INTO departments (department_name)
 VALUES ('EEE');
+
+INSERT INTO sessions (session_name)
+VALUES ('2027-28');
+
+INSERT INTO semesters (semester_name)
+VALUES ('9th Semester');

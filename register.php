@@ -198,16 +198,23 @@ if (empty($registration_type)) {
 
         <label for="semester_id">Semester:</label><br>
         <select id="semester_id" name="semester_id" required>
-            <option value="">-- Select Semester --</option>
-            <option value="1">1st Semester</option>
-            <option value="2">2nd Semester</option>
-            <option value="3">3rd Semester</option>
-            <option value="4">4th Semester</option>
-            <option value="5">5th Semester</option>
-            <option value="6">6th Semester</option>
-            <option value="7">7th Semester</option>
-            <option value="8">8th Semester</option>
-        </select>
+    <option value="">-- Select Semester --</option>
+
+    <?php
+    $semester_query = "SELECT semester_id, semester_name
+                       FROM semesters
+                       ORDER BY semester_id";
+
+    $semester_result = $conn->query($semester_query);
+
+    while ($semester = $semester_result->fetch_assoc()) {
+        echo "<option value='" . $semester['semester_id'] . "'>"
+             . htmlspecialchars($semester['semester_name'])
+             . "</option>";
+    }
+    ?>
+
+</select>
         <br><br>
 
         <h2>Registration Information</h2>
