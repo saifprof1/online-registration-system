@@ -3,6 +3,19 @@
 require_once "config/database.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (
+    empty($_POST['full_name']) ||
+    empty($_POST['father_name']) ||
+    empty($_POST['mother_name']) ||
+    empty($_POST['phone']) ||
+    empty($_POST['student_id']) ||
+    empty($_POST['department_id']) ||
+    empty($_POST['session_id']) ||
+    empty($_POST['semester_id']) ||
+    empty($_POST['registration_type'])
+) {
+    die("Please fill in all required fields.");
+}
     $conn->begin_transaction();
 
     $full_name = $_POST['full_name'];
