@@ -16,6 +16,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ) {
     die("Please fill in all required fields.");
 }
+
+$phone = trim($_POST['phone']);
+
+if (!preg_match('/^01[3-9][0-9]{8}$/', $phone)) {
+    die("Please enter a valid Bangladesh mobile number.");
+}
     $conn->begin_transaction();
 
     $full_name = $_POST['full_name'];
