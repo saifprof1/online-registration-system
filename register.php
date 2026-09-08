@@ -22,6 +22,11 @@ $phone = trim($_POST['phone']);
 if (!preg_match('/^01[3-9][0-9]{8}$/', $phone)) {
     die("Please enter a valid Bangladesh mobile number.");
 }
+$email = trim($_POST['email']);
+
+if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    die("Please enter a valid email address.");
+}
     $conn->begin_transaction();
 
     $full_name = $_POST['full_name'];
