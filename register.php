@@ -1,6 +1,7 @@
 <?php
 
 require_once "config/database.php";
+mysqli_report(MYSQLI_REPORT_OFF);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (
@@ -73,6 +74,7 @@ if (empty($registration_type)) {
     );
 
     if ($stmt->execute()) {
+
     $registration_sql = "INSERT INTO registrations
                          (student_id, registration_type)
                          VALUES (?, ?)";
@@ -86,24 +88,32 @@ if (empty($registration_type)) {
     );
 
     if ($registration_stmt->execute()) {
+        $conn->commit();
 
-    $conn->commit();
+        echo "<h2>Registration successful!</h2>";
 
-    echo "<h2>Registration successful!</h2>";
+    } else {
+        $conn->rollback();
 
-} else {
-        echo "Registration Error: " . $registration_stmt->error;
+        echo "<h2>Registration Failed</h2>";
+        echo "<p>Registration could not be completed.</p>";
     }
 
     $registration_stmt->close();
 
 } else {
 
+    $conn->rollback();
+
     if ($stmt->errno == 1062) {
+
         echo "<h2>Registration Failed</h2>";
         echo "<p>This Student ID is already registered.</p>";
+
     } else {
-        echo "Student Error: " . $stmt->error;
+
+        echo "<h2>Registration Failed</h2>";
+        echo "<p>Student registration could not be completed.</p>";
     }
 }
 
