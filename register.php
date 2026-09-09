@@ -159,44 +159,70 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2>Personal Information</h2>
 
         <label for="full_name">Full Name:</label><br>
-        <input type="text" id="full_name" name="full_name" required>
+        <input type="text" id="full_name" name="full_name"
+       value="<?php echo htmlspecialchars($_POST['full_name'] ?? ''); ?>"
+       required>
         <br><br>
 
         <label for="father_name">Father's Name:</label><br>
-        <input type="text" id="father_name" name="father_name" required>
+        <input type="text" id="father_name" name="father_name"
+       value="<?php echo htmlspecialchars($_POST['father_name'] ?? ''); ?>"
+       required>
         <br><br>
 
         <label for="mother_name">Mother's Name:</label><br>
-        <input type="text" id="mother_name" name="mother_name" required>
+        <input type="text" id="mother_name" name="mother_name"
+       value="<?php echo htmlspecialchars($_POST['mother_name'] ?? ''); ?>"
+       required>
         <br><br>
 
         <label for="date_of_birth">Date of Birth:</label><br>
-        <input type="date" id="date_of_birth" name="date_of_birth">
+        <input type="date"
+       id="date_of_birth"
+       name="date_of_birth"
+       value="<?php echo htmlspecialchars($_POST['date_of_birth'] ?? ''); ?>">
         <br><br>
 
         <label>Gender:</label><br>
 
-        <input type="radio" id="male" name="gender" value="Male">
+        <input type="radio"
+       id="male"
+       name="gender"
+       value="Male"
+       <?php echo (($_POST['gender'] ?? '') == 'Male') ? 'checked' : ''; ?>>
         <label for="male">Male</label>
 
-        <input type="radio" id="female" name="gender" value="Female">
+        <input type="radio"
+       id="female"
+       name="gender"
+       value="Female"
+       <?php echo (($_POST['gender'] ?? '') == 'Female') ? 'checked' : ''; ?>>
         <label for="female">Female</label>
 
-        <input type="radio" id="other" name="gender" value="Other">
+        <input type="radio"
+       id="other"
+       name="gender"
+       value="Other"
+       <?php echo (($_POST['gender'] ?? '') == 'Other') ? 'checked' : ''; ?>>
         <label for="other">Other</label>
 
         <br><br>
 
         <label for="phone">Phone Number:</label><br>
-        <input type="text" id="phone" name="phone" required>
+        <input type="text" id="phone" name="phone"
+       value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>"
+       required>
         <br><br>
 
         <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email">
+        <input type="email" id="email" name="email"
+       value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
         <br><br>
 
         <label for="address">Address:</label><br>
-        <textarea id="address" name="address" rows="4" cols="40"></textarea>
+        <textarea id="address" name="address" rows="4" cols="40"><?php
+        echo htmlspecialchars($_POST['address'] ?? '');
+        ?></textarea> 
 
         <br><br>
 
@@ -204,7 +230,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <label for="student_id">Student ID:</label><br>
 
-<input type="text" id="student_id" name="student_id" required>
+    <input type="text"
+       id="student_id"
+       name="student_id"
+       value="<?php echo htmlspecialchars($_POST['student_id'] ?? ''); ?>"
+       required>
 
 <span id="student_id_status"></span>
 
@@ -222,9 +252,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $department_result = $conn->query($department_query);
 
     while ($department = $department_result->fetch_assoc()) {
-        echo "<option value='" . $department['department_id'] . "'>"
-             . htmlspecialchars($department['department_name'])
-             . "</option>";
+        echo "<option value='" . $department['department_id'] . "'"
+     . (($department['department_id'] == ($_POST['department_id'] ?? '')) ? ' selected' : '')
+     . ">"
+     . htmlspecialchars($department['department_name'])
+     . "</option>";
     }
     ?>
 
@@ -243,9 +275,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $session_result = $conn->query($session_query);
 
     while ($session = $session_result->fetch_assoc()) {
-        echo "<option value='" . $session['session_id'] . "'>"
-             . htmlspecialchars($session['session_name'])
-             . "</option>";
+        echo "<option value='" . $session['session_id'] . "'"
+     . (($session['session_id'] == ($_POST['session_id'] ?? '')) ? ' selected' : '')
+     . ">"
+     . htmlspecialchars($session['session_name'])
+     . "</option>";
     }
     ?>
 
@@ -264,9 +298,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $semester_result = $conn->query($semester_query);
 
     while ($semester = $semester_result->fetch_assoc()) {
-        echo "<option value='" . $semester['semester_id'] . "'>"
-             . htmlspecialchars($semester['semester_name'])
-             . "</option>";
+        echo "<option value='" . $semester['semester_id'] . "'"
+     . (($semester['semester_id'] == ($_POST['semester_id'] ?? '')) ? ' selected' : '')
+     . ">"
+     . htmlspecialchars($semester['semester_name'])
+     . "</option>";
     }
     ?>
 
@@ -287,9 +323,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     ];
 
     foreach ($registration_types as $type) {
-        echo "<option value='" . htmlspecialchars($type) . "'>"
-             . htmlspecialchars($type)
-             . "</option>";
+        echo "<option value='" . htmlspecialchars($type) . "'"
+     . (($type == ($_POST['registration_type'] ?? '')) ? ' selected' : '')
+     . ">"
+     . htmlspecialchars($type)
+     . "</option>";
     }
     ?>
 
