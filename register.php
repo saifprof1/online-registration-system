@@ -39,7 +39,10 @@ if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $email = $_POST['email'];
     $address = $_POST['address'];
 
-    $student_id = $_POST['student_id'];
+    $student_id = strtoupper(trim($_POST['student_id']));
+    if (!preg_match('/^B[0-9]{9}$/', $student_id)) {
+    die("Invalid Student ID. Formate example: B230102013");
+       }
     $department_id = $_POST['department_id'];
     $session_id = $_POST['session_id'];
     $semester_id = $_POST['semester_id'];
@@ -185,8 +188,12 @@ if (empty($registration_type)) {
                 <h2>Academic Information</h2>
 
         <label for="student_id">Student ID:</label><br>
-        <input type="text" id="student_id" name="student_id" required>
-        <br><br>
+
+<input type="text" id="student_id" name="student_id" required>
+
+<span id="student_id_status"></span>
+
+<br><br>
 
         <label for="department_id">Department:</label><br>
         <select id="department_id" name="department_id" required>
@@ -277,6 +284,30 @@ if (empty($registration_type)) {
         <button type="submit">Next</button>
 
     </form>
+
+    <script>
+document.getElementById("student_id").addEventListener("blur", function () {
+
+    const studentId = this.value.trim();
+    const status = document.getElementById("student_id_status");
+
+    if (studentId === "") {
+        status.innerHTML = "";
+        return;
+    }
+
+    fetch("check_student.php?student_id=" + encodeURIComponent(studentId))
+        .then(response => response.text())
+        .then(data => {
+
+            if (data === "exists") {
+                status.innerHTML = " ⚠️ Student ID Already Registered";
+            } 
+
+        });
+
+});
+</script>
 
 </body>
 </html>
