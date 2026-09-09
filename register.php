@@ -3,125 +3,132 @@
 require_once "config/database.php";
 mysqli_report(MYSQLI_REPORT_OFF);
 
+$error_message = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     if (
-    empty($_POST['full_name']) ||
-    empty($_POST['father_name']) ||
-    empty($_POST['mother_name']) ||
-    empty($_POST['phone']) ||
-    empty($_POST['student_id']) ||
-    empty($_POST['department_id']) ||
-    empty($_POST['session_id']) ||
-    empty($_POST['semester_id']) ||
-    empty($_POST['registration_type'])
-) {
-    die("Please fill in all required fields.");
-}
+        empty($_POST['full_name']) ||
+        empty($_POST['father_name']) ||
+        empty($_POST['mother_name']) ||
+        empty($_POST['phone']) ||
+        empty($_POST['student_id']) ||
+        empty($_POST['department_id']) ||
+        empty($_POST['session_id']) ||
+        empty($_POST['semester_id']) ||
+        empty($_POST['registration_type'])
+    ) {
+        $error_message = "Please fill in all required fields.";
+    }
 
-$phone = trim($_POST['phone']);
+    $phone = trim($_POST['phone'] ?? '');
 
-if (!preg_match('/^01[3-9][0-9]{8}$/', $phone)) {
-    die("Please enter a valid Bangladesh mobile number.");
-}
-$email = trim($_POST['email']);
+    if (empty($error_message) &&
+        !preg_match('/^01[3-9][0-9]{8}$/', $phone)) {
+        $error_message = "Please enter a valid Bangladesh mobile number.";
+    }
 
-if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    die("Please enter a valid email address.");
-}
-    $conn->begin_transaction();
+    $email = trim($_POST['email'] ?? '');
 
-    $full_name = $_POST['full_name'];
-    $father_name = $_POST['father_name'];
-    $mother_name = $_POST['mother_name'];
-    $date_of_birth = $_POST['date_of_birth'];
-    $gender = $_POST['gender'];
-    $phone = $_POST['phone'];
-    $email = $_POST['email'];
-    $address = $_POST['address'];
+    if (empty($error_message) &&
+        !empty($email) &&
+        !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error_message = "Please enter a valid email address.";
+    }
 
-    $student_id = strtoupper(trim($_POST['student_id']));
-    if (!preg_match('/^B[0-9]{9}$/', $student_id)) {
-    die("Invalid Student ID. Formate example: B230102013");
-       }
-    $department_id = $_POST['department_id'];
-    $session_id = $_POST['session_id'];
-    $semester_id = $_POST['semester_id'];
+    $student_id = strtoupper(trim($_POST['student_id'] ?? ''));
+
+    if (empty($error_message) &&
+        !preg_match('/^B[0-9]{9}$/', $student_id)) {
+        $error_message = "Invalid Student ID. Format Example: B230102013";
+    }
+
+    $full_name = trim($_POST['full_name'] ?? '');
+    $father_name = trim($_POST['father_name'] ?? '');
+    $mother_name = trim($_POST['mother_name'] ?? '');
+    $date_of_birth = $_POST['date_of_birth'] ?? '';
+    $gender = $_POST['gender'] ?? '';
+    $address = trim($_POST['address'] ?? '');
+
+    $department_id = $_POST['department_id'] ?? '';
+    $session_id = $_POST['session_id'] ?? '';
+    $semester_id = $_POST['semester_id'] ?? '';
     $registration_type = $_POST['registration_type'] ?? '';
 
-if (empty($registration_type)) {
-    die("Please select a registration type.");
-}
+    if (empty($error_message)) {
 
-    $sql = "INSERT INTO students
-            (student_id, full_name, father_name, mother_name,
-             date_of_birth, gender, phone, email, address,
-             department_id, session_id, semester_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $conn->begin_transaction();
 
-    $stmt = $conn->prepare($sql);
+        $sql = "INSERT INTO students
+                (student_id, full_name, father_name, mother_name,
+                 date_of_birth, gender, phone, email, address,
+                 department_id, session_id, semester_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    $stmt->bind_param(
-    "ssssssssiiii",
-        $student_id,
-        $full_name,
-        $father_name,
-        $mother_name,
-        $date_of_birth,
-        $gender,
-        $phone,
-        $email,
-        $address,
-        $department_id,
-        $session_id,
-        $semester_id
-    );
+        $stmt = $conn->prepare($sql);
 
-    if ($stmt->execute()) {
+        $stmt->bind_param(
+            "ssssssssiiii",
+            $student_id,
+            $full_name,
+            $father_name,
+            $mother_name,
+            $date_of_birth,
+            $gender,
+            $phone,
+            $email,
+            $address,
+            $department_id,
+            $session_id,
+            $semester_id
+        );
 
-    $registration_sql = "INSERT INTO registrations
-                         (student_id, registration_type)
-                         VALUES (?, ?)";
+        if ($stmt->execute()) {
 
-    $registration_stmt = $conn->prepare($registration_sql);
+            $registration_sql = "INSERT INTO registrations
+                                 (student_id, registration_type)
+                                 VALUES (?, ?)";
 
-    $registration_stmt->bind_param(
-        "ss",
-        $student_id,
-        $registration_type
-    );
+            $registration_stmt = $conn->prepare($registration_sql);
 
-    if ($registration_stmt->execute()) {
-        $conn->commit();
+            $registration_stmt->bind_param(
+                "ss",
+                $student_id,
+                $registration_type
+            );
 
-        echo "<h2>Registration successful!</h2>";
+            if ($registration_stmt->execute()) {
 
-    } else {
-        $conn->rollback();
+                $conn->commit();
 
-        echo "<h2>Registration Failed</h2>";
-        echo "<p>Registration could not be completed.</p>";
+                echo "<h2>Registration successful!</h2>";
+
+            } else {
+
+                $conn->rollback();
+
+                echo "<h2>Registration Failed</h2>";
+                echo "<p>Registration could not be completed.</p>";
+            }
+
+            $registration_stmt->close();
+
+        } else {
+
+            $conn->rollback();
+
+            if ($stmt->errno == 1062) {
+
+                $error_message = "This Student ID is already registered.";
+
+            } else {
+
+                $error_message = "Student registration could not be completed.";
+            }
+        }
+
+        $stmt->close();
     }
-
-    $registration_stmt->close();
-
-} else {
-
-    $conn->rollback();
-
-    if ($stmt->errno == 1062) {
-
-        echo "<h2>Registration Failed</h2>";
-        echo "<p>This Student ID is already registered.</p>";
-
-    } else {
-
-        echo "<h2>Registration Failed</h2>";
-        echo "<p>Student registration could not be completed.</p>";
-    }
-}
-
-    $stmt->close();
-    $conn->close();
 }
 
 ?>
@@ -140,6 +147,14 @@ if (empty($registration_type)) {
     <h1>Online Student Registration</h1>
 
     <form action="" method="POST">
+
+        <?php if (!empty($error_message)): ?>
+
+    <p style="color: red;">
+        <?php echo htmlspecialchars($error_message); ?>
+    </p>
+
+          <?php endif; ?>
 
         <h2>Personal Information</h2>
 
