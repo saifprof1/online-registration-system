@@ -101,7 +101,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 $conn->commit();
 
-                echo "<h2>Registration successful!</h2>";
+                echo '<div class="success-box">';
+
+echo "<h2>Registration Successful!</h2>";
+
+echo "<p><strong>Student ID:</strong> "
+     . htmlspecialchars($student_id)
+     . "</p>";
+
+echo "<p><strong>Registration Type:</strong> "
+     . htmlspecialchars($registration_type)
+     . "</p>";
+
+echo '<p><a href="register.php">Back to Registration</a></p>';
+
+echo '</div>';
 
             } else {
 
@@ -138,6 +152,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+.success-box {
+    background-color: #e8f5e9;
+    border: 1px solid #4caf50;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+.success-box h2 {
+    color: #2e7d32;
+    margin-top: 0;
+}
+
+.success-box p {
+    margin: 8px 0;
+}
+
+.success-box a {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    text-decoration: none;
+    background-color: #2e7d32;
+    color: white;
+    border-radius: 5px;
+}
+
+</style>
 
     <title>Student Registration</title>
 </head>
