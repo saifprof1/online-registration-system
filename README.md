@@ -25,16 +25,42 @@ A web-based student registration system developed for the **Data Management** co
 - XAMPP
 - Git & GitHub
 
-## Project Structure
+## Database
 
-```text
-online-registration-system/
-├── index.php
-├── register.php
-├── check_student.php
-├── test_connection.php
-├── config/
-│   └── database.php
-├── database/
-│   └── database.sql
-└── README.md
+**Database Name:** `online_registration`
+
+**Tables:**
+
+- `departments`
+- `sessions`
+- `semesters`
+- `students`
+- `registrations`
+- `admins`
+
+## Run Locally
+
+1. Start **Apache** and **MySQL** from XAMPP.
+2. Clone the repository into `htdocs`.
+3. Create the `online_registration` database.
+4. Import `database/database.sql`.
+5. Open:
+
+   `http://localhost/online-registration-system/register.php`
+
+## Academic Project
+
+**Course:** Data Base Management System 
+
+**Department:** Information and Communication Technology (ICT)  
+
+**Institution:** Chandpur Science and Technology University
+
+## Developer
+
+**Muhammad Saif**  
+ICT Undergraduate | Chandpur Science and Technology University
+
+## Status
+
+🚧 **Under Development**
