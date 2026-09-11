@@ -394,14 +394,19 @@ document.getElementById("student_id").addEventListener("blur", function () {
     }
 
     fetch("check_student.php?student_id=" + encodeURIComponent(studentId))
-        .then(response => response.text())
-        .then(data => {
+    .then(response => response.text())
+    .then(data => {
 
-            if (data === "exists") {
-                status.innerHTML = " ⚠️ Student ID Already Registered";
-            } 
+        if (data === "exists") {
+            status.innerHTML = " ⚠️ Student ID Already Registered";
+            status.style.color = "red";
+        } 
+        else if (data === "available") {
+            status.innerHTML = " ✅ Student ID Available";
+            status.style.color = "green";
+        }
 
-        });
+    });
 
 });
 </script>
