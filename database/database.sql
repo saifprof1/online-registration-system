@@ -13,6 +13,18 @@ VALUES
 ('CSE'),
 ('DBA');
 
+CREATE TABLE batches (
+    batch_id INT AUTO_INCREMENT PRIMARY KEY,
+    batch_name VARCHAR(50) NOT NULL UNIQUE
+);
+
+INSERT INTO batches (batch_name) VALUES
+('1st Batch'),
+('2nd Batch'),
+('3rd Batch'),
+('4th Batch'),
+('5th Batch');
+
 CREATE TABLE students (
     student_id VARCHAR(50) PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -27,6 +39,7 @@ CREATE TABLE students (
     address TEXT,
     department_id INT NOT NULL,
     session_id INT NOT NULL,
+    batch_id INT NOT NULL,
     semester_id INT NOT NULL,
 
     FOREIGN KEY (department_id)
@@ -43,6 +56,11 @@ CREATE TABLE students (
         REFERENCES semesters(semester_id)
         ON UPDATE CASCADE
         ON DELETE RESTRICT
+
+    FOREIGN KEY (batch_id)
+    REFERENCES batches(batch_id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT,
 );
 
 CREATE TABLE sessions (

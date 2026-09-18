@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         empty($_POST['student_id']) ||
         empty($_POST['department_id']) ||
         empty($_POST['session_id']) ||
+        empty($_POST['batch_id']) ||
         empty($_POST['semester_id']) ||
         empty($_POST['registration_type'])
     ) {
@@ -55,6 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $department_id = $_POST['department_id'] ?? '';
     $session_id = $_POST['session_id'] ?? '';
+    $batch_id = $_POST['batch_id'] ?? '';
     $semester_id = $_POST['semester_id'] ?? '';
     $registration_type = $_POST['registration_type'] ?? '';
 
@@ -66,13 +68,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         (student_id, first_name, middle_name, last_name,
          father_name, mother_name, date_of_birth, gender,
          phone, email, address,
-         department_id, session_id, semester_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+         department_id, session_id, batch_id, semester_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $conn->prepare($sql);
 
 $stmt->bind_param(
-    "sssssssssssiii",
+    "sssssssssssiiii",
     $student_id,
     $first_name,
     $middle_name,
@@ -86,6 +88,7 @@ $stmt->bind_param(
     $address,
     $department_id,
     $session_id,
+    $batch_id,
     $semester_id
 );
 
@@ -233,26 +236,26 @@ echo '</div>';
        required>
         <br><br>
 
-        <label for="father_name">Father's Name:</label><br>
+        <label for="father_name">Father's Name:</label>
         <input type="text" id="father_name" name="father_name"
        value="<?php echo htmlspecialchars($_POST['father_name'] ?? ''); ?>"
        required>
         <br><br>
 
-        <label for="mother_name">Mother's Name:</label><br>
+        <label for="mother_name">Mother's Name:</label>
         <input type="text" id="mother_name" name="mother_name"
        value="<?php echo htmlspecialchars($_POST['mother_name'] ?? ''); ?>"
        required>
         <br><br>
 
-        <label for="date_of_birth">Date of Birth:</label><br>
+        <label for="date_of_birth">Date of Birth:</label>
         <input type="date"
        id="date_of_birth"
        name="date_of_birth"
        value="<?php echo htmlspecialchars($_POST['date_of_birth'] ?? ''); ?>">
         <br><br>
 
-        <label>Gender:</label><br>
+        <label>Gender:</label>
 
         <input type="radio"
        id="male"
@@ -277,18 +280,18 @@ echo '</div>';
 
         <br><br>
 
-        <label for="phone">Phone Number:</label><br>
+        <label for="phone">Phone Number:</label>
         <input type="text" id="phone" name="phone"
        value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>"
        required>
         <br><br>
 
-        <label for="email">Email:</label><br>
+        <label for="email">Email:</label>
         <input type="email" id="email" name="email"
        value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
         <br><br>
 
-        <label for="address">Address:</label><br>
+        <label for="address">Address:</label>
         <textarea id="address" name="address" rows="4" cols="40"><?php
         echo htmlspecialchars($_POST['address'] ?? '');
         ?></textarea> 
@@ -297,7 +300,7 @@ echo '</div>';
 
                 <h2>Academic Information</h2>
 
-        <label for="student_id">Student ID:</label><br>
+        <label for="student_id">Student ID:</label>
 
     <input type="text"
        id="student_id"
@@ -309,7 +312,7 @@ echo '</div>';
 
 <br><br>
 
-        <label for="department_id">Department:</label><br>
+        <label for="department_id">Department:</label>
         <select id="department_id" name="department_id" required>
     <option value="">-- Select Department --</option>
 
@@ -332,7 +335,7 @@ echo '</div>';
 </select>
         <br><br>
 
-        <label for="session_id">Session:</label><br>
+        <label for="session_id">Session:</label>
         <select id="session_id" name="session_id" required>
     <option value="">-- Select Session --</option>
 
@@ -355,7 +358,27 @@ echo '</div>';
 </select>
         <br><br>
 
-        <label for="semester_id">Semester:</label><br>
+        <label for="batch_id">Batch:</label>
+<select id="batch_id" name="batch_id" required>
+    <option value="">-- Select Batch --</option>
+
+    <?php
+    $batch_query = "SELECT batch_id, batch_name FROM batches ORDER BY batch_id";
+    $batch_result = $conn->query($batch_query);
+
+    while ($batch = $batch_result->fetch_assoc()) {
+        echo "<option value='" . $batch['batch_id'] . "'"
+            . (($batch['batch_id'] == ($_POST['batch_id'] ?? '')) ? ' selected' : '')
+            . ">"
+            . htmlspecialchars($batch['batch_name'])
+            . "</option>";
+    }
+    ?>
+</select>
+
+<br><br>
+
+        <label for="semester_id">Semester:</label>
         <select id="semester_id" name="semester_id" required>
     <option value="">-- Select Semester --</option>
 
@@ -380,7 +403,7 @@ echo '</div>';
 
         <h2>Registration Information</h2>
 
-        <label for="registration_type">Registration Type:</label><br>
+        <label for="registration_type">Registration Type:</label>
         <select id="registration_type" name="registration_type" required>
     <option value="">-- Select Registration Type --</option>
 
