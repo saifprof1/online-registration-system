@@ -8,7 +8,8 @@ $error_message = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (
-        empty($_POST['full_name']) ||
+        empty($_POST['first_name']) ||
+        empty($_POST['last_name']) ||
         empty($_POST['father_name']) ||
         empty($_POST['mother_name']) ||
         empty($_POST['phone']) ||
@@ -43,7 +44,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_message = "Invalid Student ID. Format Example: B230102013";
     }
 
-    $full_name = trim($_POST['full_name'] ?? '');
+    $first_name = trim($_POST['first_name'] ?? '');
+    $middle_name = trim($_POST['middle_name'] ?? '');
+    $last_name = trim($_POST['last_name'] ?? '');
     $father_name = trim($_POST['father_name'] ?? '');
     $mother_name = trim($_POST['mother_name'] ?? '');
     $date_of_birth = $_POST['date_of_birth'] ?? '';
@@ -60,28 +63,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn->begin_transaction();
 
         $sql = "INSERT INTO students
-                (student_id, full_name, father_name, mother_name,
-                 date_of_birth, gender, phone, email, address,
-                 department_id, session_id, semester_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        (student_id, first_name, middle_name, last_name,
+         father_name, mother_name, date_of_birth, gender,
+         phone, email, address,
+         department_id, session_id, semester_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        $stmt = $conn->prepare($sql);
+$stmt = $conn->prepare($sql);
 
-        $stmt->bind_param(
-            "ssssssssiiii",
-            $student_id,
-            $full_name,
-            $father_name,
-            $mother_name,
-            $date_of_birth,
-            $gender,
-            $phone,
-            $email,
-            $address,
-            $department_id,
-            $session_id,
-            $semester_id
-        );
+$stmt->bind_param(
+    "sssssssssssiii",
+    $student_id,
+    $first_name,
+    $middle_name,
+    $last_name,
+    $father_name,
+    $mother_name,
+    $date_of_birth,
+    $gender,
+    $phone,
+    $email,
+    $address,
+    $department_id,
+    $session_id,
+    $semester_id
+);
 
         if ($stmt->execute()) {
 
@@ -202,9 +208,28 @@ echo '</div>';
 
         <h2>Personal Information</h2>
 
-        <label for="full_name">Full Name:</label><br>
-        <input type="text" id="full_name" name="full_name"
-       value="<?php echo htmlspecialchars($_POST['full_name'] ?? ''); ?>"
+        <label for="first_name">First Name:</label>
+<input type="text"
+       id="first_name"
+       name="first_name"
+       value="<?php echo htmlspecialchars($_POST['first_name'] ?? ''); ?>"
+       required>
+
+<br><br>
+
+<label for="middle_name">Middle Name:</label>
+<input type="text"
+       id="middle_name"
+       name="middle_name"
+       value="<?php echo htmlspecialchars($_POST['middle_name'] ?? ''); ?>">
+
+<br><br>
+
+<label for="last_name">Last Name:</label>
+<input type="text"
+       id="last_name"
+       name="last_name"
+       value="<?php echo htmlspecialchars($_POST['last_name'] ?? ''); ?>"
        required>
         <br><br>
 

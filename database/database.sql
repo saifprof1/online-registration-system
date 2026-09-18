@@ -104,3 +104,8 @@ VALUES ('2027-28');
 
 INSERT INTO semesters (semester_name)
 VALUES ('9th Semester');
+
+ALTER TABLE students
+ADD first_name VARCHAR(50) NOT NULL AFTER student_id,
+ADD middle_name VARCHAR(50) NULL AFTER first_name,
+ADD last_name VARCHAR(50) NOT NULL AFTER middle_name;
