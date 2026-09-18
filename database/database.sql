@@ -15,7 +15,9 @@ VALUES
 
 CREATE TABLE students (
     student_id VARCHAR(50) PRIMARY KEY,
-    full_name VARCHAR(100) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    middle_name VARCHAR(50),
+    last_name VARCHAR(50) NOT NULL,
     father_name VARCHAR(100) NOT NULL,
     mother_name VARCHAR(100) NOT NULL,
     date_of_birth DATE,
@@ -104,8 +106,3 @@ VALUES ('2027-28');
 
 INSERT INTO semesters (semester_name)
 VALUES ('9th Semester');
-
-ALTER TABLE students
-ADD first_name VARCHAR(50) NOT NULL AFTER student_id,
-ADD middle_name VARCHAR(50) NULL AFTER first_name,
-ADD last_name VARCHAR(50) NOT NULL AFTER middle_name;
