@@ -25,6 +25,16 @@ INSERT INTO batches (batch_name) VALUES
 ('4th Batch'),
 ('5th Batch');
 
+CREATE TABLE years (
+    year_id INT AUTO_INCREMENT PRIMARY KEY,
+    year_name VARCHAR(20) NOT NULL UNIQUE);
+
+INSERT INTO years (year_name) 
+VALUES ('1st Year'),
+('2nd Year'),
+('3rd Year'),
+('4th Year');
+
 CREATE TABLE students (
     student_id VARCHAR(50) PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -40,6 +50,7 @@ CREATE TABLE students (
     department_id INT NOT NULL,
     session_id INT NOT NULL,
     batch_id INT NOT NULL,
+    year_id INT NOT NULL,
     semester_id INT NOT NULL,
 
     FOREIGN KEY (department_id)
@@ -52,16 +63,21 @@ CREATE TABLE students (
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
 
+    FOREIGN KEY (year_id)
+    REFERENCES years(year_id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT,    
+
     FOREIGN KEY (semester_id)
         REFERENCES semesters(semester_id)
         ON UPDATE CASCADE
-        ON DELETE RESTRICT
+        ON DELETE RESTRICT,
 
     FOREIGN KEY (batch_id)
     REFERENCES batches(batch_id)
     ON UPDATE CASCADE
-    ON DELETE RESTRICT,
-);
+    ON DELETE RESTRICT
+    );
 
 CREATE TABLE sessions (
     session_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -116,11 +132,3 @@ CREATE TABLE admins (
 INSERT INTO admins (username, password, full_name)
 VALUES ('admin', 'admin123', 'System Administrator');
 
-INSERT INTO departments (department_name)
-VALUES ('EEE');
-
-INSERT INTO sessions (session_name)
-VALUES ('2027-28');
-
-INSERT INTO semesters (semester_name)
-VALUES ('9th Semester');

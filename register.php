@@ -17,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         empty($_POST['department_id']) ||
         empty($_POST['session_id']) ||
         empty($_POST['batch_id']) ||
+        empty($_POST['year_id']) ||
         empty($_POST['semester_id']) ||
         empty($_POST['registration_type'])
     ) {
@@ -53,10 +54,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $date_of_birth = $_POST['date_of_birth'] ?? '';
     $gender = $_POST['gender'] ?? '';
     $address = trim($_POST['address'] ?? '');
-
     $department_id = $_POST['department_id'] ?? '';
     $session_id = $_POST['session_id'] ?? '';
     $batch_id = $_POST['batch_id'] ?? '';
+    $year_id = $_POST['year_id'] ?? '';
     $semester_id = $_POST['semester_id'] ?? '';
     $registration_type = $_POST['registration_type'] ?? '';
 
@@ -68,13 +69,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         (student_id, first_name, middle_name, last_name,
          father_name, mother_name, date_of_birth, gender,
          phone, email, address,
-         department_id, session_id, batch_id, semester_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+         department_id, session_id, batch_id, year_id, semester_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $conn->prepare($sql);
 
 $stmt->bind_param(
-    "sssssssssssiiii",
+    "sssssssssssiiiii",
     $student_id,
     $first_name,
     $middle_name,
@@ -89,6 +90,7 @@ $stmt->bind_param(
     $department_id,
     $session_id,
     $batch_id,
+    $year_id,
     $semester_id
 );
 
@@ -371,6 +373,26 @@ echo '</div>';
             . (($batch['batch_id'] == ($_POST['batch_id'] ?? '')) ? ' selected' : '')
             . ">"
             . htmlspecialchars($batch['batch_name'])
+            . "</option>";
+    }
+    ?>
+</select>
+
+<br><br>
+
+<label for="year_id">Year:</label>
+<select id="year_id" name="year_id" required>
+    <option value="">-- Select Year --</option>
+
+    <?php
+    $year_query = "SELECT year_id, year_name FROM years ORDER BY year_id";
+    $year_result = $conn->query($year_query);
+
+    while ($year = $year_result->fetch_assoc()) {
+        echo "<option value='" . $year['year_id'] . "'"
+            . (($year['year_id'] == ($_POST['year_id'] ?? '')) ? ' selected' : '')
+            . ">"
+            . htmlspecialchars($year['year_name'])
             . "</option>";
     }
     ?>
