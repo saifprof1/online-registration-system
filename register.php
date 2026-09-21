@@ -59,6 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $batch_id = $_POST['batch_id'] ?? '';
     $year_id = $_POST['year_id'] ?? '';
     $semester_id = $_POST['semester_id'] ?? '';
+    $club_ids = $_POST['club_ids'] ?? [];
     $registration_type = $_POST['registration_type'] ?? '';
 
     if (empty($error_message)) {
@@ -138,6 +139,31 @@ echo '</div>';
 
             $registration_stmt->close();
 
+            if (!empty($club_ids)) {
+
+    $club_stmt = $conn->prepare(
+        "INSERT INTO student_clubs (student_id, club_id)
+         VALUES (?, ?)"
+    );
+
+    $club_stmt->bind_param(
+        "si",
+        $student_id,
+        $club_id
+    );
+
+    foreach ($club_ids as $club_id) {
+
+        $club_id = (int) $club_id;
+
+        if (!$club_stmt->execute()) {
+            throw new Exception("Club membership insertion failed.");
+        }
+    }
+
+    $club_stmt->close();
+}
+
         } else {
 
             $conn->rollback();
@@ -154,6 +180,8 @@ echo '</div>';
 
         $stmt->close();
     }
+
+    
 }
 
 ?>
@@ -422,6 +450,36 @@ echo '</div>';
 
 </select>
         <br><br>
+
+        <label>Club Membership:</label>
+<br>
+
+<?php
+$club_query = "SELECT club_id, club_name FROM clubs ORDER BY club_id";
+$club_result = $conn->query($club_query);
+
+while ($club = $club_result->fetch_assoc()) {
+
+    $checked = '';
+
+    if (
+        isset($_POST['club_ids']) &&
+        in_array($club['club_id'], $_POST['club_ids'])
+    ) {
+        $checked = 'checked';
+    }
+
+    echo '<label>';
+    echo '<input type="checkbox" '
+        . 'name="club_ids[]" '
+        . 'value="' . $club['club_id'] . '" '
+        . $checked . '>';
+    echo ' ' . htmlspecialchars($club['club_name']);
+    echo '</label><br>';
+}
+?>
+
+<br>
 
         <h2>Registration Information</h2>
 

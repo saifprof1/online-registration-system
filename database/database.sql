@@ -79,6 +79,36 @@ CREATE TABLE students (
     ON DELETE RESTRICT
     );
 
+CREATE TABLE clubs (
+    club_id INT AUTO_INCREMENT PRIMARY KEY,
+    club_name VARCHAR(100) NOT NULL UNIQUE
+);
+
+INSERT INTO clubs (club_name)
+ VALUES('Programming Club'),
+('Debate Club'),
+('Dawah Club'),
+('Sports Club'),
+('Business Club'),
+('Science Club');
+
+CREATE TABLE student_clubs (
+    student_id VARCHAR(50) NOT NULL,
+    club_id INT NOT NULL,
+
+    PRIMARY KEY (student_id, club_id),
+
+    FOREIGN KEY (student_id)
+        REFERENCES students(student_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (club_id)
+        REFERENCES clubs(club_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
 CREATE TABLE sessions (
     session_id INT AUTO_INCREMENT PRIMARY KEY,
     session_name VARCHAR(20) NOT NULL UNIQUE
