@@ -46,6 +46,7 @@ CREATE TABLE students (
     gender ENUM('Male', 'Female', 'Other'),
     phone VARCHAR(20) NOT NULL,
     email VARCHAR(100),
+    image_path VARCHAR(255),
     address TEXT,
     department_id INT NOT NULL,
     session_id INT NOT NULL,

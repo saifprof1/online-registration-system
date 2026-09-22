@@ -46,6 +46,63 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_message = "Invalid Student ID. Format Example: B230102013";
     }
 
+    $image_path = '';
+
+if (!isset($_FILES['student_image'])) {
+
+    $error_message = "Please upload a student image.";
+
+} elseif ($_FILES['student_image']['error'] !== UPLOAD_ERR_OK) {
+
+    switch ($_FILES['student_image']['error']) {
+
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+            $error_message = "Image size is too large.";
+            break;
+
+        case UPLOAD_ERR_NO_FILE:
+            $error_message = "Please upload a student image.";
+            break;
+
+        default:
+            $error_message = "Image upload failed.";
+            break;
+    }
+
+} else {
+
+    $image_tmp = $_FILES['student_image']['tmp_name'];
+    $image_size = $_FILES['student_image']['size'];
+
+    if ($image_size > 2 * 1024 * 1024) {
+
+        $error_message = "Image size must be less than 2 MB.";
+
+    } else {
+
+        $allowed_types = [
+            'image/jpeg',
+            'image/png',
+            'image/webp'
+        ];
+
+        $image_type = mime_content_type($image_tmp);
+        $image_info = getimagesize($image_tmp);
+
+if ($image_info === false) {
+
+    $error_message = "The uploaded file is not a valid image.";
+
+}
+
+        if (!in_array($image_type, $allowed_types, true)) {
+
+            $error_message = "Only JPG, PNG, and WebP images are allowed.";
+        }
+    }
+}
+
     $first_name = trim($_POST['first_name'] ?? '');
     $middle_name = trim($_POST['middle_name'] ?? '');
     $last_name = trim($_POST['last_name'] ?? '');
@@ -63,39 +120,75 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $registration_type = $_POST['registration_type'] ?? '';
 
     if (empty($error_message)) {
+    $extension_map = [
+        'image/jpeg' => 'jpg',
+        'image/png'  => 'png',
+        'image/webp' => 'webp'
+    ];
+
+    $image_extension = $extension_map[$image_type];
+
+    $image_filename = $student_id . '_' . time() . '.' . $image_extension;
+
+    $image_path = "uploads/students/" . $image_filename;
+
+    $upload_path = __DIR__ . "/" . $image_path;
+
+    if (!move_uploaded_file(
+        $_FILES['student_image']['tmp_name'],
+        $upload_path
+    )) {
+
+        $error_message = "Failed to upload student image.";
+
+    } else {
 
         $conn->begin_transaction();
 
-        $sql = "INSERT INTO students
-        (student_id, first_name, middle_name, last_name,
-         father_name, mother_name, date_of_birth, gender,
-         phone, email, address,
-         department_id, session_id, batch_id, year_id, semester_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
 
-$stmt = $conn->prepare($sql);
+            $sql = "INSERT INTO students
+                    (student_id, first_name, middle_name, last_name,
+                     father_name, mother_name, date_of_birth, gender,
+                     phone, email, image_path, address,
+                     department_id, session_id, batch_id, year_id, semester_id)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-$stmt->bind_param(
-    "sssssssssssiiiii",
-    $student_id,
-    $first_name,
-    $middle_name,
-    $last_name,
-    $father_name,
-    $mother_name,
-    $date_of_birth,
-    $gender,
-    $phone,
-    $email,
-    $address,
-    $department_id,
-    $session_id,
-    $batch_id,
-    $year_id,
-    $semester_id
-);
+            $stmt = $conn->prepare($sql);
 
-        if ($stmt->execute()) {
+            if (!$stmt) {
+                throw new Exception("Student query preparation failed.");
+            }
+
+            $stmt->bind_param(
+                "ssssssssssssiiiii",
+                $student_id,
+                $first_name,
+                $middle_name,
+                $last_name,
+                $father_name,
+                $mother_name,
+                $date_of_birth,
+                $gender,
+                $phone,
+                $email,
+                $image_path,
+                $address,
+                $department_id,
+                $session_id,
+                $batch_id,
+                $year_id,
+                $semester_id
+            );
+
+            if (!$stmt->execute()) {
+
+                if ($stmt->errno == 1062) {
+                    throw new Exception("This Student ID is already registered.");
+                }
+
+                throw new Exception("Student registration could not be completed.");
+            }
 
             $registration_sql = "INSERT INTO registrations
                                  (student_id, registration_type)
@@ -103,85 +196,90 @@ $stmt->bind_param(
 
             $registration_stmt = $conn->prepare($registration_sql);
 
+            if (!$registration_stmt) {
+                throw new Exception("Registration query preparation failed.");
+            }
+
             $registration_stmt->bind_param(
                 "ss",
                 $student_id,
                 $registration_type
             );
 
-            if ($registration_stmt->execute()) {
-
-                $conn->commit();
-
-                echo '<div class="success-box">';
-
-echo "<h2>Registration Successful!</h2>";
-
-echo "<p><strong>Student ID:</strong> "
-     . htmlspecialchars($student_id)
-     . "</p>";
-
-echo "<p><strong>Registration Type:</strong> "
-     . htmlspecialchars($registration_type)
-     . "</p>";
-
-echo '<p><a href="register.php">Back to Registration</a></p>';
-
-echo '</div>';
-
-            } else {
-
-                $conn->rollback();
-
-                echo "<h2>Registration Failed</h2>";
-                echo "<p>Registration could not be completed.</p>";
+            if (!$registration_stmt->execute()) {
+                throw new Exception("Registration could not be completed.");
             }
-
-            $registration_stmt->close();
 
             if (!empty($club_ids)) {
 
-    $club_stmt = $conn->prepare(
-        "INSERT INTO student_clubs (student_id, club_id)
-         VALUES (?, ?)"
-    );
+                $club_stmt = $conn->prepare(
+                    "INSERT INTO student_clubs (student_id, club_id)
+                     VALUES (?, ?)"
+                );
 
-    $club_stmt->bind_param(
-        "si",
-        $student_id,
-        $club_id
-    );
+                if (!$club_stmt) {
+                    throw new Exception("Club query preparation failed.");
+                }
 
-    foreach ($club_ids as $club_id) {
+                $club_stmt->bind_param(
+                    "si",
+                    $student_id,
+                    $club_id
+                );
 
-        $club_id = (int) $club_id;
+                foreach ($club_ids as $club_id) {
 
-        if (!$club_stmt->execute()) {
-            throw new Exception("Club membership insertion failed.");
-        }
-    }
+                    $club_id = (int) $club_id;
 
-    $club_stmt->close();
-}
+                    if (!$club_stmt->execute()) {
+                        throw new Exception("Club membership insertion failed.");
+                    }
+                }
 
-        } else {
+                $club_stmt->close();
+            }
+
+            $conn->commit();
+
+            echo '<div class="success-box">';
+
+            echo "<h2>Registration Successful!</h2>";
+
+            echo "<p><strong>Student ID:</strong> "
+                 . htmlspecialchars($student_id)
+                 . "</p>";
+
+            echo "<p><strong>Registration Type:</strong> "
+                 . htmlspecialchars($registration_type)
+                 . "</p>";
+
+            echo '<p><a href="register.php">Back to Registration</a></p>';
+
+            echo '</div>';
+
+            $registration_stmt->close();
+            $stmt->close();
+
+        } catch (Exception $e) {
 
             $conn->rollback();
 
-            if ($stmt->errno == 1062) {
+            if (file_exists($upload_path)) {
+                unlink($upload_path);
+            }
 
-                $error_message = "This Student ID is already registered.";
+            $error_message = $e->getMessage();
 
-            } else {
+            if (isset($registration_stmt) && $registration_stmt) {
+                $registration_stmt->close();
+            }
 
-                $error_message = "Student registration could not be completed.";
+            if (isset($stmt) && $stmt) {
+                $stmt->close();
             }
         }
-
-        $stmt->close();
     }
-
-    
+}
 }
 
 ?>
@@ -229,7 +327,7 @@ echo '</div>';
 
     <h1>Online Student Registration</h1>
 
-    <form action="" method="POST">
+    <form method="POST" enctype="multipart/form-data">
 
         <?php if (!empty($error_message)): ?>
 
@@ -479,7 +577,16 @@ while ($club = $club_result->fetch_assoc()) {
 }
 ?>
 
-<br>
+<br><br>
+
+<label for="student_image">Student Image:</label>
+<input type="file"
+       id="student_image"
+       name="student_image"
+       accept="image/jpeg,image/png,image/webp"
+       required>
+
+<br><br>
 
         <h2>Registration Information</h2>
 
