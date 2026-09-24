@@ -1,9 +1,21 @@
 <?php
 
+session_start();
+
 require_once "config/database.php";
 mysqli_report(MYSQLI_REPORT_OFF);
 
 $error_message = "";
+
+if (empty($_SESSION['captcha_code'])) {
+    $_SESSION['captcha_code'] = substr(
+        str_shuffle("ABCDEFGHJKLMNPQRSTUVWXYZ23456789"),
+        0,
+        6
+    );
+}
+
+$captcha_code = $_SESSION['captcha_code'];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -22,6 +34,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         empty($_POST['registration_type'])
     ) {
         $error_message = "Please fill in all required fields.";
+    }
+
+    $entered_captcha = trim($_POST['captcha'] ?? '');
+
+    if (empty($error_message) && $entered_captcha === '') {
+        $error_message = "Please enter the captcha code.";
+    }
+
+    if (
+        empty($error_message) &&
+        $entered_captcha !== $_SESSION['captcha_code']
+    ) {
+        $error_message = "Invalid captcha code.";
     }
 
     $phone = trim($_POST['phone'] ?? '');
@@ -240,6 +265,8 @@ if ($image_info === false) {
             }
 
             $conn->commit();
+
+            unset($_SESSION['captcha_code']);
 
             echo '<div class="success-box">';
 
@@ -579,6 +606,47 @@ while ($club = $club_result->fetch_assoc()) {
 
 <br><br>
 
+<div class="form-group">
+    <label>Captcha:</label>
+
+    <div style="
+        width: 220px;
+        height: 60px;
+        background-color: #eeeeee;
+        border: 2px solid #000000;
+        border-radius: 8px;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">
+        <span style="
+    color: #222222;
+    font-size: 30px;
+    font-weight: bold;
+    letter-spacing: 8px;
+    font-family: 'Courier New', monospace;
+    font-style: italic;
+    transform: rotate(-3deg);
+    display: inline-block;
+    user-select: none;
+">
+    <?php echo htmlspecialchars($captcha_code); ?>
+</span>
+    </div>
+
+    <input
+        type="text"
+        id="captcha"
+        name="captcha"
+        placeholder="Enter Captcha code"
+        autocomplete="off"
+        required
+    >
+</div>
+
+<br><br>
+
 <label for="student_image">Student Image:</label>
 <input type="file"
        id="student_image"
@@ -609,6 +677,7 @@ while ($club = $club_result->fetch_assoc()) {
      . "</option>";
     }
     ?>
+    <br><br>
 
 </select>
         <br><br>
