@@ -36,6 +36,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_message = "Please fill in all required fields.";
     }
 
+    if (empty($error_message) && empty($_POST['terms'])) {
+    $error_message = "You must agree to the Terms and Conditions.";
+    }
+
     $entered_captcha = trim($_POST['captcha'] ?? '');
 
     if (empty($error_message) && $entered_captcha === '') {
@@ -676,10 +680,25 @@ while ($club = $club_result->fetch_assoc()) {
      . htmlspecialchars($type)
      . "</option>";
     }
+    
     ?>
-    <br><br>
+<br><br>
 
 </select>
+
+<div class="form-group">
+    <label><br><br>
+        <input
+            type="checkbox"
+            name="terms"
+            id="terms"
+            value="accepted"
+            required
+        >
+        I agree to the Terms and Conditions.
+    </label>
+</div>
+
         <br><br>
 
         <button type="submit">Next</button>
