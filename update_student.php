@@ -15,26 +15,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $middle_name = trim($_POST['middle_name'] ?? '');
         $last_name = trim($_POST['last_name'] ?? '');
         $father_name = trim($_POST['father_name'] ?? '');
-        $mother_name = trim($_POST['mother_name'] ?? ''); 
+        $mother_name = trim($_POST['mother_name'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $date_of_birth = $_POST['date_of_birth'] ?? '';
+        $gender = $_POST['gender'] ?? '';
+        $address = trim($_POST['address'] ?? '');
+
+$department_id = $_POST['department_id'] ?? '';
+$session_id = $_POST['session_id'] ?? '';
+$batch_id = $_POST['batch_id'] ?? '';
+$year_id = $_POST['year_id'] ?? '';
+$semester_id = $_POST['semester_id'] ?? ''; 
 
         if (
     empty($student_id) ||
     empty($first_name) ||
     empty($last_name) ||
     empty($father_name) ||
-    empty($mother_name)
+    empty($mother_name) ||
+    empty($phone) ||
+    empty($department_id) ||
+    empty($session_id) ||
+    empty($batch_id) ||
+    empty($year_id) ||
+    empty($semester_id)
 ) {
-
-            $error_message = "First Name and Last Name are required.";
-
-        } else {
+    $error_message = "Please fill in all required fields.";
+} else {
 
             $sql = "UPDATE students
         SET first_name = ?,
             middle_name = ?,
             last_name = ?,
             father_name = ?,
-            mother_name = ?
+            mother_name = ?,
+            phone = ?,
+            email = ?,
+            date_of_birth = ?,
+            gender = ?,
+            address = ?,
+            department_id = ?,
+            session_id = ?,
+            batch_id = ?,
+            year_id = ?,
+            semester_id = ?
         WHERE student_id = ?";
 
             $stmt = $conn->prepare($sql);
@@ -46,14 +71,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
 
                 $stmt->bind_param(
-                        "ssssss",
-                    $first_name,
-                    $middle_name,
-                    $last_name,
-                    $father_name,
-                    $mother_name,
-                    $student_id
-                );
+                        "ssssssssssiiiiis",
+                        $first_name,
+                        $middle_name,
+                        $last_name,
+                        $father_name,
+                        $mother_name,
+                        $phone,
+                        $email,
+                        $date_of_birth,
+                        $gender,
+                        $address,
+                        $department_id,
+                        $session_id,
+                        $batch_id,
+                        $year_id,
+                        $semester_id,
+                        $student_id
+                    );
 
                 if ($stmt->execute()) {
 
@@ -239,6 +274,191 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     value="<?php echo htmlspecialchars($student['mother_name']); ?>"
     required
 >
+
+<br><br>
+
+<label>Phone:</label>
+<input
+    type="text"
+    name="phone"
+    value="<?php echo htmlspecialchars($student['phone']); ?>"
+    required
+>
+
+<br><br>
+
+<label>Email:</label>
+<input
+    type="email"
+    name="email"
+    value="<?php echo htmlspecialchars($student['email']); ?>"
+>
+
+<br><br>
+
+<label>Date of Birth:</label>
+<input
+    type="date"
+    name="date_of_birth"
+    value="<?php echo htmlspecialchars($student['date_of_birth']); ?>"
+>
+
+<br><br>
+
+<label>Gender:</label>
+
+<label>
+    <input
+        type="radio"
+        name="gender"
+        value="Male"
+        <?php echo ($student['gender'] === 'Male') ? 'checked' : ''; ?>
+    >
+    Male
+</label>
+
+<label>
+    <input
+        type="radio"
+        name="gender"
+        value="Female"
+        <?php echo ($student['gender'] === 'Female') ? 'checked' : ''; ?>
+    >
+    Female
+</label>
+
+<label>
+    <input
+        type="radio"
+        name="gender"
+        value="Other"
+        <?php echo ($student['gender'] === 'Other') ? 'checked' : ''; ?>
+    >
+    Other
+</label>
+
+<br><br>
+
+<label>Address:</label>
+<textarea
+    name="address"
+    rows="4"
+    cols="40"
+><?php echo htmlspecialchars($student['address']); ?></textarea>
+
+<br><br>
+
+<label>Department:</label>
+<select name="department_id" required>
+    <option value="">Select Department</option>
+
+    <?php
+    $department_result = $conn->query(
+        "SELECT department_id, department_name FROM departments ORDER BY department_id"
+    );
+
+    while ($department = $department_result->fetch_assoc()):
+    ?>
+        <option
+            value="<?php echo $department['department_id']; ?>"
+            <?php echo ($student['department_id'] == $department['department_id']) ? 'selected' : ''; ?>
+        >
+            <?php echo htmlspecialchars($department['department_name']); ?>
+        </option>
+    <?php endwhile; ?>
+</select>
+
+<br><br>
+
+
+<label>Session:</label>
+<select name="session_id" required>
+    <option value="">Select Session</option>
+
+    <?php
+    $session_result = $conn->query(
+        "SELECT session_id, session_name FROM sessions ORDER BY session_id"
+    );
+
+    while ($session = $session_result->fetch_assoc()):
+    ?>
+        <option
+            value="<?php echo $session['session_id']; ?>"
+            <?php echo ($student['session_id'] == $session['session_id']) ? 'selected' : ''; ?>
+        >
+            <?php echo htmlspecialchars($session['session_name']); ?>
+        </option>
+    <?php endwhile; ?>
+</select>
+
+<br><br>
+
+
+<label>Batch:</label>
+<select name="batch_id" required>
+    <option value="">Select Batch</option>
+
+    <?php
+    $batch_result = $conn->query(
+        "SELECT batch_id, batch_name FROM batches ORDER BY batch_id"
+    );
+
+    while ($batch = $batch_result->fetch_assoc()):
+    ?>
+        <option
+            value="<?php echo $batch['batch_id']; ?>"
+            <?php echo ($student['batch_id'] == $batch['batch_id']) ? 'selected' : ''; ?>
+        >
+            <?php echo htmlspecialchars($batch['batch_name']); ?>
+        </option>
+    <?php endwhile; ?>
+</select>
+
+<br><br>
+
+
+<label>Year:</label>
+<select name="year_id" required>
+    <option value="">Select Year</option>
+
+    <?php
+    $year_result = $conn->query(
+        "SELECT year_id, year_name FROM years ORDER BY year_id"
+    );
+
+    while ($year = $year_result->fetch_assoc()):
+    ?>
+        <option
+            value="<?php echo $year['year_id']; ?>"
+            <?php echo ($student['year_id'] == $year['year_id']) ? 'selected' : ''; ?>
+        >
+            <?php echo htmlspecialchars($year['year_name']); ?>
+        </option>
+    <?php endwhile; ?>
+</select>
+
+<br><br>
+
+
+<label>Semester:</label>
+<select name="semester_id" required>
+    <option value="">Select Semester</option>
+
+    <?php
+    $semester_result = $conn->query(
+        "SELECT semester_id, semester_name FROM semesters ORDER BY semester_id"
+    );
+
+    while ($semester = $semester_result->fetch_assoc()):
+    ?>
+        <option
+            value="<?php echo $semester['semester_id']; ?>"
+            <?php echo ($student['semester_id'] == $semester['semester_id']) ? 'selected' : ''; ?>
+        >
+            <?php echo htmlspecialchars($semester['semester_name']); ?>
+        </option>
+    <?php endwhile; ?>
+</select>
 
 <br><br>
 
