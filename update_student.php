@@ -30,10 +30,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
 
             $sql = "UPDATE students
-                    SET first_name = ?,
-                        middle_name = ?,
-                        last_name = ?
-                    WHERE student_id = ?";
+        SET first_name = ?,
+            middle_name = ?,
+            last_name = ?,
+            father_name = ?,
+            mother_name = ?
+        WHERE student_id = ?";
 
             $stmt = $conn->prepare($sql);
 
@@ -44,10 +46,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
 
                 $stmt->bind_param(
-                    "ssss",
+                        "ssssss",
                     $first_name,
                     $middle_name,
                     $last_name,
+                    $father_name,
+                    $mother_name,
                     $student_id
                 );
 
