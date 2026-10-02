@@ -14,8 +14,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $first_name = trim($_POST['first_name'] ?? '');
         $middle_name = trim($_POST['middle_name'] ?? '');
         $last_name = trim($_POST['last_name'] ?? '');
+        $father_name = trim($_POST['father_name'] ?? '');
+        $mother_name = trim($_POST['mother_name'] ?? ''); 
 
-        if (empty($student_id) || empty($first_name) || empty($last_name)) {
+        if (
+    empty($student_id) ||
+    empty($first_name) ||
+    empty($last_name) ||
+    empty($father_name) ||
+    empty($mother_name)
+) {
 
             $error_message = "First Name and Last Name are required.";
 
@@ -48,7 +56,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $success_message =
                         "Student information updated successfully.";
 
-                    // Fetch updated student information
                     $select_sql =
                         "SELECT * FROM students WHERE student_id = ?";
 
@@ -210,6 +217,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         >
 
         <br><br>
+
+        <label>Father Name:</label>
+<input
+    type="text"
+    name="father_name"
+    value="<?php echo htmlspecialchars($student['father_name']); ?>"
+    required
+>
+
+<br><br>
+
+<label>Mother Name:</label>
+<input
+    type="text"
+    name="mother_name"
+    value="<?php echo htmlspecialchars($student['mother_name']); ?>"
+    required
+>
+
+<br><br>
 
         <button type="submit" name="update_student">
             Update Student
