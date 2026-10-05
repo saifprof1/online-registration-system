@@ -21,12 +21,93 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $date_of_birth = $_POST['date_of_birth'] ?? '';
         $gender = $_POST['gender'] ?? '';
         $address = trim($_POST['address'] ?? '');
+        $current_image_path = $_POST['current_image_path'] ?? '';
+        $image_path = $current_image_path;
 
-$department_id = $_POST['department_id'] ?? '';
-$session_id = $_POST['session_id'] ?? '';
-$batch_id = $_POST['batch_id'] ?? '';
-$year_id = $_POST['year_id'] ?? '';
-$semester_id = $_POST['semester_id'] ?? ''; 
+            if (
+    isset($_FILES['image']) &&
+    $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE
+) {
+
+    if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+
+        $error_message = "Image upload failed.";
+
+    } elseif ($_FILES['image']['size'] > 2 * 1024 * 1024) {
+
+        $error_message = "Image size must not exceed 2 MB.";
+
+    } else {
+
+        $image_tmp = $_FILES['image']['tmp_name'];
+
+        $image_mime = mime_content_type($image_tmp);
+
+        $allowed_mimes = [
+            'image/jpeg',
+            'image/png',
+            'image/webp'
+        ];
+
+        if (!in_array($image_mime, $allowed_mimes, true)) {
+
+            $error_message = "Only JPG, PNG and WebP images are allowed.";
+
+        } elseif (getimagesize($image_tmp) === false) {
+
+            $error_message = "Invalid image file.";
+
+        } else {
+
+            $upload_dir = "uploads/students/";
+
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
+            }
+
+            $extension = pathinfo(
+                $_FILES['image']['name'],
+                PATHINFO_EXTENSION
+            );
+
+            $new_file_name =
+                $student_id . "_" . time() . "." . strtolower($extension);
+
+            $new_image_path =
+                $upload_dir . $new_file_name;
+
+            if (move_uploaded_file(
+    $image_tmp,
+    $new_image_path
+)) {
+
+    if (!empty($current_image_path)) {
+
+        $old_image_file = __DIR__ . "/" . $current_image_path;
+
+        if (
+            file_exists($old_image_file) &&
+            is_file($old_image_file)
+        ) {
+            unlink($old_image_file);
+        }
+    }
+
+    $image_path = $new_image_path;
+
+} else {
+
+    $error_message = "Failed to save uploaded image.";
+}
+        }
+    }
+}
+
+        $department_id = $_POST['department_id'] ?? '';
+        $session_id = $_POST['session_id'] ?? '';
+        $batch_id = $_POST['batch_id'] ?? '';
+        $year_id = $_POST['year_id'] ?? '';
+        $semester_id = $_POST['semester_id'] ?? ''; 
 
         if (
     empty($student_id) ||
@@ -55,6 +136,7 @@ $semester_id = $_POST['semester_id'] ?? '';
             date_of_birth = ?,
             gender = ?,
             address = ?,
+            image_path = ?,
             department_id = ?,
             session_id = ?,
             batch_id = ?,
@@ -71,7 +153,7 @@ $semester_id = $_POST['semester_id'] ?? '';
             } else {
 
                 $stmt->bind_param(
-                        "ssssssssssiiiiis",
+                        "sssssssssssiiiiis",
                         $first_name,
                         $middle_name,
                         $last_name,
@@ -82,6 +164,7 @@ $semester_id = $_POST['semester_id'] ?? '';
                         $date_of_birth,
                         $gender,
                         $address,
+                        $image_path,
                         $department_id,
                         $session_id,
                         $batch_id,
@@ -92,8 +175,52 @@ $semester_id = $_POST['semester_id'] ?? '';
 
                 if ($stmt->execute()) {
 
-                    $success_message =
-                        "Student information updated successfully.";
+    $club_ids = $_POST['club_ids'] ?? [];
+
+    $delete_club_sql = "
+        DELETE FROM student_clubs
+        WHERE student_id = ?
+    ";
+
+    $delete_club_stmt = $conn->prepare($delete_club_sql);
+
+    if ($delete_club_stmt) {
+
+        $delete_club_stmt->bind_param("s", $student_id);
+        $delete_club_stmt->execute();
+        $delete_club_stmt->close();
+    }
+
+    if (!empty($club_ids)) {
+
+        $insert_club_sql = "
+            INSERT INTO student_clubs (student_id, club_id)
+            VALUES (?, ?)
+        ";
+
+        $insert_club_stmt = $conn->prepare($insert_club_sql);
+
+        if ($insert_club_stmt) {
+
+            foreach ($club_ids as $club_id) {
+
+                $club_id = (int)$club_id;
+
+                $insert_club_stmt->bind_param(
+                    "si",
+                    $student_id,
+                    $club_id
+                );
+
+                $insert_club_stmt->execute();
+            }
+
+            $insert_club_stmt->close();
+        }
+    }
+
+    $success_message =
+        "Student information updated successfully.";
 
                     $select_sql =
                         "SELECT * FROM students WHERE student_id = ?";
@@ -151,9 +278,32 @@ $semester_id = $_POST['semester_id'] ?? '';
 
                 if ($result->num_rows === 1) {
 
-                    $student = $result->fetch_assoc();
+    $student = $result->fetch_assoc();
 
-                } else {
+    $club_ids = [];
+
+    $club_sql = "
+        SELECT club_id
+        FROM student_clubs
+        WHERE student_id = ?
+    ";
+
+    $club_stmt = $conn->prepare($club_sql);
+
+    if ($club_stmt) {
+
+        $club_stmt->bind_param("s", $student_id);
+        $club_stmt->execute();
+
+        $club_result = $club_stmt->get_result();
+
+        while ($club_row = $club_result->fetch_assoc()) {
+            $club_ids[] = $club_row['club_id'];
+        }
+
+        $club_stmt->close();
+    }
+} else {
 
                     $error_message = "Student not found.";
                 }
@@ -194,7 +344,7 @@ $semester_id = $_POST['semester_id'] ?? '';
 
 <?php endif; ?>
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
 
         <label for="student_id">Student ID:</label>
 
@@ -216,7 +366,7 @@ $semester_id = $_POST['semester_id'] ?? '';
 
     <h3>Student Information</h3>
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
 
         <label>Student ID:</label>
         <input
@@ -459,6 +609,78 @@ $semester_id = $_POST['semester_id'] ?? '';
         </option>
     <?php endwhile; ?>
 </select>
+
+<br><br>
+
+<label>Club Membership:</label>
+<br>
+
+<?php
+$club_query = "
+    SELECT club_id, club_name
+    FROM clubs
+    ORDER BY club_id
+";
+
+$club_result = $conn->query($club_query);
+
+while ($club = $club_result->fetch_assoc()) {
+
+    $checked = '';
+
+    if (in_array($club['club_id'], $club_ids)) {
+        $checked = 'checked';
+    }
+
+    echo '<label>';
+    echo '<input type="checkbox" '
+        . 'name="club_ids[]" '
+        . 'value="' . $club['club_id'] . '" '
+        . $checked . '>';
+    echo ' ' . htmlspecialchars($club['club_name']);
+    echo '</label><br>';
+}
+?>
+
+<br><br>
+
+<label>Current Image:</label>
+
+<?php if (!empty($student['image_path'])): ?>
+
+    <br>
+
+    <img
+        src="<?php echo htmlspecialchars($student['image_path']); ?>"
+        alt="Student Image"
+        width="120"
+        height="120"
+        style="object-fit: cover; border: 1px solid #ccc;"
+    >
+
+<?php else: ?>
+
+    <p>No image uploaded.</p>
+
+<?php endif; ?>
+
+<br><br>
+
+<input
+    type="hidden"
+    name="current_image_path"
+    value="<?php echo htmlspecialchars($student['image_path']); ?>"
+>
+
+<label>New Image:</label>
+
+<input
+    type="file"
+    name="image"
+    accept="image/jpeg,image/png,image/webp"
+>
+
+<br><br>
 
 <br><br>
 
