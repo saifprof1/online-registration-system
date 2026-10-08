@@ -32,6 +32,144 @@ if (!$result) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Students</title>
+    <style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+}
+
+.container {
+    width: 95%;
+    max-width: 1400px;
+    margin: 40px auto;
+}
+
+.header {
+    background: #1f4e78;
+    color: white;
+    padding: 25px;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+}
+
+.header h1 {
+    margin: 0 0 8px;
+}
+
+.header p {
+    margin: 0;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1200px;
+}
+
+th {
+    background: #1f4e78;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+tr:hover {
+    background: #f8f9fa;
+}
+
+.student-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.no-image {
+    color: #888;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.update-button,
+.delete-button {
+    display: inline-block;
+    padding: 7px 12px;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+.update-button {
+    background: #f0ad4e;
+}
+
+.delete-button {
+    background: #dc3545;
+}
+
+.update-button:hover,
+.delete-button:hover {
+    opacity: 0.9;
+}
+
+.back-button {
+    display: inline-block;
+    margin-bottom: 15px;
+    padding: 10px 18px;
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.back-button:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 700px) {
+
+    .container {
+        width: 98%;
+        margin: 15px auto;
+    }
+
+    .card {
+        padding: 15px;
+    }
+}
+</style>
 </head>
 
 <body>
