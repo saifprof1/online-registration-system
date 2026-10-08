@@ -5,12 +5,19 @@ require_once "config/database.php";
 $student = null;
 $error_message = "";
 $success_message = "";
+$club_ids = [];
+
+
+// =====================================================
+// UPDATE STUDENT
+// =====================================================
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST['update_student'])) {
 
         $student_id = strtoupper(trim($_POST['student_id'] ?? ''));
+
         $first_name = trim($_POST['first_name'] ?? '');
         $middle_name = trim($_POST['middle_name'] ?? '');
         $last_name = trim($_POST['last_name'] ?? '');
@@ -21,221 +28,327 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $date_of_birth = $_POST['date_of_birth'] ?? '';
         $gender = $_POST['gender'] ?? '';
         $address = trim($_POST['address'] ?? '');
-        $current_image_path = $_POST['current_image_path'] ?? '';
-        $image_path = $current_image_path;
-
-            if (
-    isset($_FILES['image']) &&
-    $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE
-) {
-
-    if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-
-        $error_message = "Image upload failed.";
-
-    } elseif ($_FILES['image']['size'] > 2 * 1024 * 1024) {
-
-        $error_message = "Image size must not exceed 2 MB.";
-
-    } else {
-
-        $image_tmp = $_FILES['image']['tmp_name'];
-
-        $image_mime = mime_content_type($image_tmp);
-
-        $allowed_mimes = [
-            'image/jpeg',
-            'image/png',
-            'image/webp'
-        ];
-
-        if (!in_array($image_mime, $allowed_mimes, true)) {
-
-            $error_message = "Only JPG, PNG and WebP images are allowed.";
-
-        } elseif (getimagesize($image_tmp) === false) {
-
-            $error_message = "Invalid image file.";
-
-        } else {
-
-            $upload_dir = "uploads/students/";
-
-            if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0777, true);
-            }
-
-            $extension = pathinfo(
-                $_FILES['image']['name'],
-                PATHINFO_EXTENSION
-            );
-
-            $new_file_name =
-                $student_id . "_" . time() . "." . strtolower($extension);
-
-            $new_image_path =
-                $upload_dir . $new_file_name;
-
-            if (move_uploaded_file(
-    $image_tmp,
-    $new_image_path
-)) {
-
-    if (!empty($current_image_path)) {
-
-        $old_image_file = __DIR__ . "/" . $current_image_path;
-
-        if (
-            file_exists($old_image_file) &&
-            is_file($old_image_file)
-        ) {
-            unlink($old_image_file);
-        }
-    }
-
-    $image_path = $new_image_path;
-
-} else {
-
-    $error_message = "Failed to save uploaded image.";
-}
-        }
-    }
-}
 
         $department_id = $_POST['department_id'] ?? '';
         $session_id = $_POST['session_id'] ?? '';
         $batch_id = $_POST['batch_id'] ?? '';
         $year_id = $_POST['year_id'] ?? '';
-        $semester_id = $_POST['semester_id'] ?? ''; 
+        $semester_id = $_POST['semester_id'] ?? '';
+
+        $current_image_path =
+            $_POST['current_image_path'] ?? '';
+
+        $image_path = $current_image_path;
+
+
+        // =================================================
+        // IMAGE UPDATE
+        // =================================================
 
         if (
-    empty($student_id) ||
-    empty($first_name) ||
-    empty($last_name) ||
-    empty($father_name) ||
-    empty($mother_name) ||
-    empty($phone) ||
-    empty($department_id) ||
-    empty($session_id) ||
-    empty($batch_id) ||
-    empty($year_id) ||
-    empty($semester_id)
-) {
-    $error_message = "Please fill in all required fields.";
-} else {
+            isset($_FILES['image']) &&
+            $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE
+        ) {
 
-            $sql = "UPDATE students
-        SET first_name = ?,
-            middle_name = ?,
-            last_name = ?,
-            father_name = ?,
-            mother_name = ?,
-            phone = ?,
-            email = ?,
-            date_of_birth = ?,
-            gender = ?,
-            address = ?,
-            image_path = ?,
-            department_id = ?,
-            session_id = ?,
-            batch_id = ?,
-            year_id = ?,
-            semester_id = ?
-        WHERE student_id = ?";
+            if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+
+                $error_message = "Image upload failed.";
+
+            } elseif (
+                $_FILES['image']['size'] > 2 * 1024 * 1024
+            ) {
+
+                $error_message =
+                    "Image size must not exceed 2 MB.";
+
+            } else {
+
+                $image_tmp =
+                    $_FILES['image']['tmp_name'];
+
+                $image_mime =
+                    mime_content_type($image_tmp);
+
+                $allowed_mimes = [
+                    'image/jpeg',
+                    'image/png',
+                    'image/webp'
+                ];
+
+                if (
+                    !in_array(
+                        $image_mime,
+                        $allowed_mimes,
+                        true
+                    )
+                ) {
+
+                    $error_message =
+                        "Only JPG, PNG and WebP images are allowed.";
+
+                } elseif (
+                    getimagesize($image_tmp) === false
+                ) {
+
+                    $error_message =
+                        "Invalid image file.";
+
+                } else {
+
+                    $upload_dir =
+                        "uploads/students/";
+
+                    if (!is_dir($upload_dir)) {
+
+                        mkdir(
+                            $upload_dir,
+                            0777,
+                            true
+                        );
+                    }
+
+                    $extension = pathinfo(
+                        $_FILES['image']['name'],
+                        PATHINFO_EXTENSION
+                    );
+
+                    $new_file_name =
+                        $student_id .
+                        "_" .
+                        time() .
+                        "." .
+                        strtolower($extension);
+
+                    $new_image_path =
+                        $upload_dir .
+                        $new_file_name;
+
+                    if (
+                        move_uploaded_file(
+                            $image_tmp,
+                            $new_image_path
+                        )
+                    ) {
+
+                        // Delete old image
+
+                        if (!empty($current_image_path)) {
+
+                            $old_image_file =
+                                __DIR__ .
+                                "/" .
+                                $current_image_path;
+
+                            if (
+                                file_exists($old_image_file) &&
+                                is_file($old_image_file)
+                            ) {
+
+                                unlink($old_image_file);
+                            }
+                        }
+
+                        $image_path =
+                            $new_image_path;
+
+                    } else {
+
+                        $error_message =
+                            "Failed to save uploaded image.";
+                    }
+                }
+            }
+        }
+
+
+        // =================================================
+        // REQUIRED FIELD VALIDATION
+        // =================================================
+
+        if (
+            empty($student_id) ||
+            empty($first_name) ||
+            empty($last_name) ||
+            empty($father_name) ||
+            empty($mother_name) ||
+            empty($phone) ||
+            empty($department_id) ||
+            empty($session_id) ||
+            empty($batch_id) ||
+            empty($year_id) ||
+            empty($semester_id)
+        ) {
+
+            $error_message =
+                "Please fill in all required fields.";
+
+        }
+
+
+        // =================================================
+        // UPDATE DATABASE
+        // =================================================
+
+        if (empty($error_message)) {
+
+            $sql = "
+                UPDATE students
+                SET first_name = ?,
+                    middle_name = ?,
+                    last_name = ?,
+                    father_name = ?,
+                    mother_name = ?,
+                    phone = ?,
+                    email = ?,
+                    date_of_birth = ?,
+                    gender = ?,
+                    address = ?,
+                    image_path = ?,
+                    department_id = ?,
+                    session_id = ?,
+                    batch_id = ?,
+                    year_id = ?,
+                    semester_id = ?
+                WHERE student_id = ?
+            ";
 
             $stmt = $conn->prepare($sql);
 
             if (!$stmt) {
 
-                $error_message = "Update query preparation failed.";
+                $error_message =
+                    "Update query preparation failed.";
 
             } else {
 
                 $stmt->bind_param(
-                        "sssssssssssiiiiis",
-                        $first_name,
-                        $middle_name,
-                        $last_name,
-                        $father_name,
-                        $mother_name,
-                        $phone,
-                        $email,
-                        $date_of_birth,
-                        $gender,
-                        $address,
-                        $image_path,
-                        $department_id,
-                        $session_id,
-                        $batch_id,
-                        $year_id,
-                        $semester_id,
-                        $student_id
-                    );
+                    "sssssssssssiiiiis",
+                    $first_name,
+                    $middle_name,
+                    $last_name,
+                    $father_name,
+                    $mother_name,
+                    $phone,
+                    $email,
+                    $date_of_birth,
+                    $gender,
+                    $address,
+                    $image_path,
+                    $department_id,
+                    $session_id,
+                    $batch_id,
+                    $year_id,
+                    $semester_id,
+                    $student_id
+                );
+
 
                 if ($stmt->execute()) {
 
-    $club_ids = $_POST['club_ids'] ?? [];
 
-    $delete_club_sql = "
-        DELETE FROM student_clubs
-        WHERE student_id = ?
-    ";
+                    // =====================================
+                    // UPDATE CLUB MEMBERSHIPS
+                    // =====================================
 
-    $delete_club_stmt = $conn->prepare($delete_club_sql);
+                    $club_ids =
+                        $_POST['club_ids'] ?? [];
 
-    if ($delete_club_stmt) {
 
-        $delete_club_stmt->bind_param("s", $student_id);
-        $delete_club_stmt->execute();
-        $delete_club_stmt->close();
-    }
+                    // Remove old memberships
 
-    if (!empty($club_ids)) {
+                    $delete_club_sql = "
+                        DELETE FROM student_clubs
+                        WHERE student_id = ?
+                    ";
 
-        $insert_club_sql = "
-            INSERT INTO student_clubs (student_id, club_id)
-            VALUES (?, ?)
-        ";
+                    $delete_club_stmt =
+                        $conn->prepare(
+                            $delete_club_sql
+                        );
 
-        $insert_club_stmt = $conn->prepare($insert_club_sql);
+                    if ($delete_club_stmt) {
 
-        if ($insert_club_stmt) {
+                        $delete_club_stmt->bind_param(
+                            "s",
+                            $student_id
+                        );
 
-            foreach ($club_ids as $club_id) {
+                        $delete_club_stmt->execute();
 
-                $club_id = (int)$club_id;
+                        $delete_club_stmt->close();
+                    }
 
-                $insert_club_stmt->bind_param(
-                    "si",
-                    $student_id,
-                    $club_id
-                );
 
-                $insert_club_stmt->execute();
-            }
+                    // Add new memberships
 
-            $insert_club_stmt->close();
-        }
-    }
+                    if (!empty($club_ids)) {
 
-    $success_message =
-        "Student information updated successfully.";
+                        $insert_club_sql = "
+                            INSERT INTO student_clubs
+                            (student_id, club_id)
+                            VALUES (?, ?)
+                        ";
 
-                    $select_sql =
-                        "SELECT * FROM students WHERE student_id = ?";
+                        $insert_club_stmt =
+                            $conn->prepare(
+                                $insert_club_sql
+                            );
 
-                    $select_stmt = $conn->prepare($select_sql);
+                        if ($insert_club_stmt) {
+
+                            foreach (
+                                $club_ids
+                                as $club_id
+                            ) {
+
+                                $club_id =
+                                    (int)$club_id;
+
+                                $insert_club_stmt->bind_param(
+                                    "si",
+                                    $student_id,
+                                    $club_id
+                                );
+
+                                $insert_club_stmt->execute();
+                            }
+
+                            $insert_club_stmt->close();
+                        }
+                    }
+
+
+                    $success_message =
+                        "Student information updated successfully.";
+
+
+                    // Reload updated student
+
+                    $select_sql = "
+                        SELECT *
+                        FROM students
+                        WHERE student_id = ?
+                    ";
+
+                    $select_stmt =
+                        $conn->prepare($select_sql);
 
                     if ($select_stmt) {
 
-                        $select_stmt->bind_param("s", $student_id);
+                        $select_stmt->bind_param(
+                            "s",
+                            $student_id
+                        );
+
                         $select_stmt->execute();
 
-                        $result = $select_stmt->get_result();
+                        $result =
+                            $select_stmt->get_result();
 
                         if ($result->num_rows === 1) {
-                            $student = $result->fetch_assoc();
+
+                            $student =
+                                $result->fetch_assoc();
                         }
 
                         $select_stmt->close();
@@ -253,63 +366,193 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } else {
 
-        $student_id = strtoupper(trim($_POST['student_id'] ?? ''));
+        // =================================================
+        // SEARCH FROM POST
+        // =================================================
+
+        $student_id =
+            strtoupper(
+                trim(
+                    $_POST['student_id'] ?? ''
+                )
+            );
 
         if (empty($student_id)) {
 
-            $error_message = "Please enter Student ID.";
+            $error_message =
+                "Please enter Student ID.";
 
         } else {
 
-            $sql = "SELECT * FROM students WHERE student_id = ?";
+            $sql = "
+                SELECT *
+                FROM students
+                WHERE student_id = ?
+            ";
 
-            $stmt = $conn->prepare($sql);
+            $stmt =
+                $conn->prepare($sql);
 
             if (!$stmt) {
 
-                $error_message = "Query preparation failed.";
+                $error_message =
+                    "Query preparation failed.";
 
             } else {
 
-                $stmt->bind_param("s", $student_id);
+                $stmt->bind_param(
+                    "s",
+                    $student_id
+                );
+
                 $stmt->execute();
 
-                $result = $stmt->get_result();
+                $result =
+                    $stmt->get_result();
 
                 if ($result->num_rows === 1) {
 
-    $student = $result->fetch_assoc();
+                    $student =
+                        $result->fetch_assoc();
 
-    $club_ids = [];
 
-    $club_sql = "
-        SELECT club_id
-        FROM student_clubs
-        WHERE student_id = ?
-    ";
+                    // Load club memberships
 
-    $club_stmt = $conn->prepare($club_sql);
+                    $club_sql = "
+                        SELECT club_id
+                        FROM student_clubs
+                        WHERE student_id = ?
+                    ";
 
-    if ($club_stmt) {
+                    $club_stmt =
+                        $conn->prepare($club_sql);
 
-        $club_stmt->bind_param("s", $student_id);
-        $club_stmt->execute();
+                    if ($club_stmt) {
 
-        $club_result = $club_stmt->get_result();
+                        $club_stmt->bind_param(
+                            "s",
+                            $student_id
+                        );
 
-        while ($club_row = $club_result->fetch_assoc()) {
-            $club_ids[] = $club_row['club_id'];
-        }
+                        $club_stmt->execute();
 
-        $club_stmt->close();
-    }
-} else {
+                        $club_result =
+                            $club_stmt->get_result();
 
-                    $error_message = "Student not found.";
+                        while (
+                            $club_row =
+                            $club_result->fetch_assoc()
+                        ) {
+
+                            $club_ids[] =
+                                $club_row['club_id'];
+                        }
+
+                        $club_stmt->close();
+                    }
+
+                } else {
+
+                    $error_message =
+                        "Student not found.";
                 }
 
                 $stmt->close();
             }
+        }
+    }
+}
+
+
+// =====================================================
+// DIRECT LOAD FROM ADMIN PAGE
+// =====================================================
+
+elseif ($_SERVER["REQUEST_METHOD"] == "GET") {
+
+    $student_id =
+        strtoupper(
+            trim(
+                $_GET['student_id'] ?? ''
+            )
+        );
+
+    if (!empty($student_id)) {
+
+        $sql = "
+            SELECT *
+            FROM students
+            WHERE student_id = ?
+        ";
+
+        $stmt =
+            $conn->prepare($sql);
+
+        if (!$stmt) {
+
+            $error_message =
+                "Query preparation failed.";
+
+        } else {
+
+            $stmt->bind_param(
+                "s",
+                $student_id
+            );
+
+            $stmt->execute();
+
+            $result =
+                $stmt->get_result();
+
+            if ($result->num_rows === 1) {
+
+                $student =
+                    $result->fetch_assoc();
+
+
+                // Load club memberships
+
+                $club_sql = "
+                    SELECT club_id
+                    FROM student_clubs
+                    WHERE student_id = ?
+                ";
+
+                $club_stmt =
+                    $conn->prepare($club_sql);
+
+                if ($club_stmt) {
+
+                    $club_stmt->bind_param(
+                        "s",
+                        $student_id
+                    );
+
+                    $club_stmt->execute();
+
+                    $club_result =
+                        $club_stmt->get_result();
+
+                    while (
+                        $club_row =
+                        $club_result->fetch_assoc()
+                    ) {
+
+                        $club_ids[] =
+                            $club_row['club_id'];
+                    }
+
+                    $club_stmt->close();
+                }
+
+            } else {
+
+                $error_message =
+                    "Student not found.";
+            }
+
+            $stmt->close();
         }
     }
 }

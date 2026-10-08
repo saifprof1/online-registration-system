@@ -6,48 +6,85 @@ $student = null;
 $error_message = "";
 $success_message = "";
 
+
+// =====================================================
+// POST REQUEST
+// =====================================================
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $student_id = strtoupper(trim($_POST['student_id'] ?? ''));
+    $student_id =
+        strtoupper(
+            trim(
+                $_POST['student_id'] ?? ''
+            )
+        );
+
+
+    // =================================================
+    // DELETE STUDENT
+    // =================================================
 
     if (isset($_POST['delete_student'])) {
 
         if (empty($student_id)) {
 
-            $error_message = "Student ID is required.";
+            $error_message =
+                "Student ID is required.";
 
         } else {
+
+            // Get image path before deleting student
+
             $select_sql = "
                 SELECT image_path
                 FROM students
                 WHERE student_id = ?
             ";
 
-            $select_stmt = $conn->prepare($select_sql);
+            $select_stmt =
+                $conn->prepare($select_sql);
 
             if (!$select_stmt) {
 
-                $error_message = "Query preparation failed.";
+                $error_message =
+                    "Query preparation failed.";
 
             } else {
 
-                $select_stmt->bind_param("s", $student_id);
+                $select_stmt->bind_param(
+                    "s",
+                    $student_id
+                );
+
                 $select_stmt->execute();
 
-                $result = $select_stmt->get_result();
+                $result =
+                    $select_stmt->get_result();
+
 
                 if ($result->num_rows === 1) {
 
-                    $student_data = $result->fetch_assoc();
+                    $student_data =
+                        $result->fetch_assoc();
 
-                    $image_path = $student_data['image_path'];
+                    $image_path =
+                        $student_data['image_path'];
+
+
+                    // =================================
+                    // Delete club memberships
+                    // =================================
+
                     $delete_club_sql = "
                         DELETE FROM student_clubs
                         WHERE student_id = ?
                     ";
 
                     $delete_club_stmt =
-                        $conn->prepare($delete_club_sql);
+                        $conn->prepare(
+                            $delete_club_sql
+                        );
 
                     if ($delete_club_stmt) {
 
@@ -57,8 +94,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         );
 
                         $delete_club_stmt->execute();
+
                         $delete_club_stmt->close();
                     }
+
+
+                    // =================================
+                    // Delete student
+                    // =================================
 
                     $delete_student_sql = "
                         DELETE FROM students
@@ -66,7 +109,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ";
 
                     $delete_student_stmt =
-                        $conn->prepare($delete_student_sql);
+                        $conn->prepare(
+                            $delete_student_sql
+                        );
 
                     if (!$delete_student_stmt) {
 
@@ -80,11 +125,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $student_id
                         );
 
-                        if ($delete_student_stmt->execute()) {
+
+                        if (
+                            $delete_student_stmt->execute()
+                        ) {
+
+                            // =============================
+                            // Delete image file
+                            // =============================
+
                             if (!empty($image_path)) {
 
                                 $image_file =
-                                    __DIR__ . "/" . $image_path;
+                                    __DIR__ .
+                                    "/" .
+                                    $image_path;
 
                                 if (
                                     file_exists($image_file) &&
@@ -94,6 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     unlink($image_file);
                                 }
                             }
+
 
                             $success_message =
                                 "Student deleted successfully.";
@@ -106,23 +162,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 "Student could not be deleted.";
                         }
 
+
                         $delete_student_stmt->close();
                     }
 
                 } else {
 
-                    $error_message = "Student not found.";
+                    $error_message =
+                        "Student not found.";
                 }
+
 
                 $select_stmt->close();
             }
         }
 
+
+    // =================================================
+    // SEARCH STUDENT FROM POST
+    // =================================================
+
     } else {
 
         if (empty($student_id)) {
 
-            $error_message = "Please enter Student ID.";
+            $error_message =
+                "Please enter Student ID.";
 
         } else {
 
@@ -132,7 +197,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 WHERE student_id = ?
             ";
 
-            $stmt = $conn->prepare($sql);
+            $stmt =
+                $conn->prepare($sql);
 
             if (!$stmt) {
 
@@ -141,14 +207,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             } else {
 
-                $stmt->bind_param("s", $student_id);
+                $stmt->bind_param(
+                    "s",
+                    $student_id
+                );
+
                 $stmt->execute();
 
-                $result = $stmt->get_result();
+                $result =
+                    $stmt->get_result();
+
 
                 if ($result->num_rows === 1) {
 
-                    $student = $result->fetch_assoc();
+                    $student =
+                        $result->fetch_assoc();
 
                 } else {
 
@@ -156,8 +229,69 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         "Student not found.";
                 }
 
+
                 $stmt->close();
             }
+        }
+    }
+
+
+// =====================================================
+// GET REQUEST FROM ADMIN PAGE
+// =====================================================
+
+} elseif ($_SERVER["REQUEST_METHOD"] == "GET") {
+
+    $student_id =
+        strtoupper(
+            trim(
+                $_GET['student_id'] ?? ''
+            )
+        );
+
+
+    if (!empty($student_id)) {
+
+        $sql = "
+            SELECT *
+            FROM students
+            WHERE student_id = ?
+        ";
+
+        $stmt =
+            $conn->prepare($sql);
+
+        if (!$stmt) {
+
+            $error_message =
+                "Query preparation failed.";
+
+        } else {
+
+            $stmt->bind_param(
+                "s",
+                $student_id
+            );
+
+            $stmt->execute();
+
+            $result =
+                $stmt->get_result();
+
+
+            if ($result->num_rows === 1) {
+
+                $student =
+                    $result->fetch_assoc();
+
+            } else {
+
+                $error_message =
+                    "Student not found.";
+            }
+
+
+            $stmt->close();
         }
     }
 }
