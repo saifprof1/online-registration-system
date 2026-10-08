@@ -104,11 +104,12 @@ tr:hover {
 }
 
 .student-image {
-    width: 60px;
-    height: 60px;
+    width: 65px;
+    height: 65px;
     object-fit: cover;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    display: block;
 }
 
 .no-image {
@@ -117,8 +118,24 @@ tr:hover {
 
 .action-buttons {
     display: flex;
-    gap: 6px;
+    gap: 8px;
+    align-items: center;
     white-space: nowrap;
+}
+
+.update-button,
+.delete-button {
+    min-width: 75px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.update-button:hover,
+.delete-button:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
 }
 
 .update-button,
@@ -191,14 +208,15 @@ tr:hover {
                 <th>Gender</th>
                 <th>Phone</th>
                 <th>Email</th>
-                <th>Image</th>
                 <th>Address</th>
                 <th>Department</th>
                 <th>Session</th>
                 <th>Batch</th>
                 <th>Year</th>
                 <th>Semester</th>
+                <th>Image</th>
                 <th>Action</th>
+                
             </tr>
         </thead>
 
@@ -220,13 +238,29 @@ tr:hover {
             <td><?php echo htmlspecialchars($row['gender']); ?></td>
             <td><?php echo htmlspecialchars($row['phone']); ?></td>
             <td><?php echo htmlspecialchars($row['email']); ?></td>
-            <td><?php echo htmlspecialchars($row['image_path']); ?></td>
             <td><?php echo htmlspecialchars($row['address']); ?></td>
             <td><?php echo htmlspecialchars($row['department_id']); ?></td>
             <td><?php echo htmlspecialchars($row['session_id']); ?></td>
             <td><?php echo htmlspecialchars($row['batch_id']); ?></td>
             <td><?php echo htmlspecialchars($row['year_id']); ?></td>
             <td><?php echo htmlspecialchars($row['semester_id']); ?></td>
+            <td>
+    <?php if (!empty($row['image_path'])): ?>
+
+        <img
+            src="<?php echo htmlspecialchars($row['image_path']); ?>"
+            alt="Student Image"
+            class="student-image"
+        >
+
+    <?php else: ?>
+
+        <span class="no-image">
+            No image
+        </span>
+
+    <?php endif; ?>
+</td>
             <td>
     <div class="action-buttons">
 
