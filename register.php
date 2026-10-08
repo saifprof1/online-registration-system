@@ -321,44 +321,136 @@ if ($image_info === false) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-
-.success-box {
-    background-color: #e8f5e9;
-    border: 1px solid #4caf50;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 8px;
+* {
+    box-sizing: border-box;
 }
 
-.success-box h2 {
-    color: #2e7d32;
-    margin-top: 0;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #333;
 }
 
-.success-box p {
-    margin: 8px 0;
+.container {
+    width: 92%;
+    max-width: 1000px;
+    margin: 40px auto;
 }
 
-.success-box a {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 8px 15px;
-    text-decoration: none;
-    background-color: #2e7d32;
+.header {
+    background: #1f4e78;
     color: white;
-    border-radius: 5px;
+    padding: 28px;
+    text-align: center;
+    border-radius: 10px 10px 0 0;
 }
 
+.header h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.header p {
+    margin: 0;
+    font-size: 15px;
+}
+
+.form-card {
+    background: white;
+    padding: 30px;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+    color: #1f4e78;
+    border-bottom: 2px solid #1f4e78;
+    padding-bottom: 8px;
+    margin-top: 25px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="file"],
+select,
+textarea {
+    max-width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #1f4e78;
+    box-shadow: 0 0 0 2px rgba(31, 78, 120, 0.1);
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 6px;
+    background: #1f4e78;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 700px) {
+
+    .container {
+        width: 96%;
+        margin: 20px auto;
+    }
+
+    .form-card {
+        padding: 20px;
+    }
+}
 </style>
 
     <title>Student Registration</title>
+    
 </head>
 
 <body>
 
-    <h1>Online Student Registration</h1>
+    <body>
 
-    <form method="POST" enctype="multipart/form-data">
+    <div class="container">
+
+        <div class="header">
+            <h1>Online Student Registration</h1>
+            <p>Please complete the registration form carefully</p>
+        </div>
+
+        <div class="form-card">
+
+            <form method="POST" enctype="multipart/form-data">
 
         <?php if (!empty($error_message)): ?>
 
@@ -703,7 +795,11 @@ while ($club = $club_result->fetch_assoc()) {
 
         <button type="submit">Next</button>
 
-    </form>
+                </form>
+
+        </div>
+
+    </div>
 
     <script>
 document.getElementById("student_id").addEventListener("blur", function () {
