@@ -569,40 +569,6 @@ elseif ($_SERVER["REQUEST_METHOD"] == "GET") {
 
 <body>
 
-    <h2>Update Student Information</h2>
-
-    <?php if (!empty($error_message)): ?>
-
-        <p style="color: red;">
-            <?php echo htmlspecialchars($error_message); ?>
-        </p>
-
-    <?php endif; ?>
-
-    <?php if (!empty($success_message)): ?>
-
-    <p style="color: green;">
-        <?php echo htmlspecialchars($success_message); ?>
-    </p>
-
-<?php endif; ?>
-
-    <form method="POST" enctype="multipart/form-data">
-
-        <label for="student_id">Student ID:</label>
-
-        <input
-            type="text"
-            id="student_id"
-            name="student_id"
-            placeholder="Enter Student ID"
-            required
-        >
-
-        <button type="submit">Search Student</button>
-
-    </form>
-
     <?php if ($student !== null): ?>
 
     <hr>
