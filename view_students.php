@@ -228,17 +228,23 @@ tr:hover {
             <td><?php echo htmlspecialchars($row['year_id']); ?></td>
             <td><?php echo htmlspecialchars($row['semester_id']); ?></td>
             <td>
-    <a
-        href="update_student.php?student_id=<?php echo urlencode($student['student_id']); ?>"
-    >
-        Update
-    </a>
+    <div class="action-buttons">
 
-    <a
-        href="delete_student.php?student_id=<?php echo urlencode($student['student_id']); ?>"
-    >
-        Delete
-    </a>
+        <a
+            href="update_student.php?student_id=<?php echo urlencode($row['student_id']); ?>"
+            class="update-button"
+        >
+            Update
+        </a>
+
+        <a
+            href="delete_student.php?student_id=<?php echo urlencode($row['student_id']); ?>"
+            class="delete-button"
+        >
+            Delete
+        </a>
+
+    </div>
 </td>
         </tr>
 
