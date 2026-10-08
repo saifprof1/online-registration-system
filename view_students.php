@@ -60,6 +60,7 @@ if (!$result) {
                 <th>Batch</th>
                 <th>Year</th>
                 <th>Semester</th>
+                <th>Action</th>
             </tr>
         </thead>
 
@@ -88,6 +89,19 @@ if (!$result) {
             <td><?php echo htmlspecialchars($row['batch_id']); ?></td>
             <td><?php echo htmlspecialchars($row['year_id']); ?></td>
             <td><?php echo htmlspecialchars($row['semester_id']); ?></td>
+            <td>
+    <a
+        href="update_student.php?student_id=<?php echo urlencode($student['student_id']); ?>"
+    >
+        Update
+    </a>
+
+    <a
+        href="delete_student.php?student_id=<?php echo urlencode($student['student_id']); ?>"
+    >
+        Delete
+    </a>
+</td>
         </tr>
 
     <?php endwhile; ?>
