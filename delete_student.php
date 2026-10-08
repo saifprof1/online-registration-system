@@ -327,29 +327,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php endif; ?>
 
 
-    <!-- Search Student -->
-
-    <form method="POST">
-
-        <label for="student_id">
-            Student ID:
-        </label>
-
-        <input
-            type="text"
-            name="student_id"
-            id="student_id"
-            placeholder="Enter Student ID"
-            required
-        >
-
-        <button type="submit">
-            Search Student
-        </button>
-
-    </form>
-
-
     <?php if ($student !== null): ?>
 
         <hr>
