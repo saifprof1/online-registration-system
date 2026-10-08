@@ -462,41 +462,78 @@ button[type="submit"]:hover {
 
         <h2>Personal Information</h2>
 
+        <div class="form-row">
+
+    <div class="form-group">
         <label for="first_name">First Name:</label>
-<input type="text"
-       id="first_name"
-       name="first_name"
-       value="<?php echo htmlspecialchars($_POST['first_name'] ?? ''); ?>"
-       required>
 
-<br><br>
+        <input
+            type="text"
+            id="first_name"
+            name="first_name"
+            value="<?php echo htmlspecialchars($_POST['first_name'] ?? ''); ?>"
+            required>
+    </div>
 
-<label for="middle_name">Middle Name:</label>
-<input type="text"
-       id="middle_name"
-       name="middle_name"
-       value="<?php echo htmlspecialchars($_POST['middle_name'] ?? ''); ?>">
+    <div class="form-group">
+        <label for="middle_name">Middle Name:</label>
 
-<br><br>
+        <input
+            type="text"
+            id="middle_name"
+            name="middle_name"
+            value="<?php echo htmlspecialchars($_POST['middle_name'] ?? ''); ?>"
+        >
+    </div>
 
-<label for="last_name">Last Name:</label>
-<input type="text"
-       id="last_name"
-       name="last_name"
-       value="<?php echo htmlspecialchars($_POST['last_name'] ?? ''); ?>"
-       required>
+</div>
+
+<div class="form-group">
+
+    <label for="last_name">Last Name:</label>
+
+    <input
+        type="text"
+        id="last_name"
+        name="last_name"
+        value="<?php echo htmlspecialchars($_POST['last_name'] ?? ''); ?>"
+        required
+    >
+
+</div>
         <br><br>
+
+        <div class="form-row">
+
+    <div class="form-group">
 
         <label for="father_name">Father's Name:</label>
-        <input type="text" id="father_name" name="father_name"
-       value="<?php echo htmlspecialchars($_POST['father_name'] ?? ''); ?>"
-       required>
-        <br><br>
+
+        <input
+            type="text"
+            id="father_name"
+            name="father_name"
+            value="<?php echo htmlspecialchars($_POST['father_name'] ?? ''); ?>"
+            required
+        >
+
+    </div>
+
+    <div class="form-group">
 
         <label for="mother_name">Mother's Name:</label>
-        <input type="text" id="mother_name" name="mother_name"
-       value="<?php echo htmlspecialchars($_POST['mother_name'] ?? ''); ?>"
-       required>
+
+        <input
+            type="text"
+            id="mother_name"
+            name="mother_name"
+            value="<?php echo htmlspecialchars($_POST['mother_name'] ?? ''); ?>"
+            required
+        >
+
+    </div>
+
+</div>
         <br><br>
 
         <label for="date_of_birth">Date of Birth:</label>
