@@ -333,6 +333,12 @@ body {
     color: #333;
 }
 
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
 .container {
     width: 92%;
     max-width: 1000px;
@@ -429,6 +435,10 @@ button[type="submit"]:hover {
 
     .form-card {
         padding: 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
     }
 }
 </style>
@@ -600,114 +610,265 @@ button[type="submit"]:hover {
 
 <br><br>
 
+        <div class="form-row">
+
+    <div class="form-group">
+
         <label for="department_id">Department:</label>
+
         <select id="department_id" name="department_id" required>
-    <option value="">-- Select Department --</option>
 
-    <?php
-    $department_query = "SELECT department_id, department_name
-                         FROM departments
-                         ORDER BY department_name";
+            <option value="">-- Select Department --</option>
 
-    $department_result = $conn->query($department_query);
+            <?php
+            $department_query = "
+                SELECT department_id, department_name
+                FROM departments
+                ORDER BY department_name
+            ";
 
-    while ($department = $department_result->fetch_assoc()) {
-        echo "<option value='" . $department['department_id'] . "'"
-     . (($department['department_id'] == ($_POST['department_id'] ?? '')) ? ' selected' : '')
-     . ">"
-     . htmlspecialchars($department['department_name'])
-     . "</option>";
-    }
-    ?>
+            $department_result =
+                $conn->query($department_query);
 
-</select>
-        <br><br>
+            while (
+                $department =
+                $department_result->fetch_assoc()
+            ) {
+
+                echo "<option value='" .
+                    $department['department_id'] . "'"
+                    .
+                    (
+                        (
+                            $department['department_id']
+                            ==
+                            ($_POST['department_id'] ?? '')
+                        )
+                        ? ' selected'
+                        : ''
+                    )
+                    .
+                    ">"
+                    .
+                    htmlspecialchars(
+                        $department['department_name']
+                    )
+                    .
+                    "</option>";
+            }
+            ?>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group">
 
         <label for="session_id">Session:</label>
+
         <select id="session_id" name="session_id" required>
-    <option value="">-- Select Session --</option>
 
-    <?php
-    $session_query = "SELECT session_id, session_name
-                      FROM sessions
-                      ORDER BY session_name";
+            <option value="">-- Select Session --</option>
 
-    $session_result = $conn->query($session_query);
+            <?php
+            $session_query = "
+                SELECT session_id, session_name
+                FROM sessions
+                ORDER BY session_name
+            ";
 
-    while ($session = $session_result->fetch_assoc()) {
-        echo "<option value='" . $session['session_id'] . "'"
-     . (($session['session_id'] == ($_POST['session_id'] ?? '')) ? ' selected' : '')
-     . ">"
-     . htmlspecialchars($session['session_name'])
-     . "</option>";
-    }
-    ?>
+            $session_result =
+                $conn->query($session_query);
 
-</select>
-        <br><br>
+            while (
+                $session =
+                $session_result->fetch_assoc()
+            ) {
+
+                echo "<option value='" .
+                    $session['session_id'] . "'"
+                    .
+                    (
+                        (
+                            $session['session_id']
+                            ==
+                            ($_POST['session_id'] ?? '')
+                        )
+                        ? ' selected'
+                        : ''
+                    )
+                    .
+                    ">"
+                    .
+                    htmlspecialchars(
+                        $session['session_name']
+                    )
+                    .
+                    "</option>";
+            }
+            ?>
+
+        </select>
+
+    </div>
+
+</div>
+
+        <div class="form-row">
+
+    <div class="form-group">
 
         <label for="batch_id">Batch:</label>
-<select id="batch_id" name="batch_id" required>
-    <option value="">-- Select Batch --</option>
 
-    <?php
-    $batch_query = "SELECT batch_id, batch_name FROM batches ORDER BY batch_id";
-    $batch_result = $conn->query($batch_query);
+        <select id="batch_id" name="batch_id" required>
 
-    while ($batch = $batch_result->fetch_assoc()) {
-        echo "<option value='" . $batch['batch_id'] . "'"
-            . (($batch['batch_id'] == ($_POST['batch_id'] ?? '')) ? ' selected' : '')
-            . ">"
-            . htmlspecialchars($batch['batch_name'])
-            . "</option>";
-    }
-    ?>
-</select>
+            <option value="">-- Select Batch --</option>
 
-<br><br>
+            <?php
+            $batch_query = "
+                SELECT batch_id, batch_name
+                FROM batches
+                ORDER BY batch_id
+            ";
 
-<label for="year_id">Year:</label>
-<select id="year_id" name="year_id" required>
-    <option value="">-- Select Year --</option>
+            $batch_result =
+                $conn->query($batch_query);
 
-    <?php
-    $year_query = "SELECT year_id, year_name FROM years ORDER BY year_id";
-    $year_result = $conn->query($year_query);
+            while (
+                $batch =
+                $batch_result->fetch_assoc()
+            ) {
 
-    while ($year = $year_result->fetch_assoc()) {
-        echo "<option value='" . $year['year_id'] . "'"
-            . (($year['year_id'] == ($_POST['year_id'] ?? '')) ? ' selected' : '')
-            . ">"
-            . htmlspecialchars($year['year_name'])
-            . "</option>";
-    }
-    ?>
-</select>
+                echo "<option value='" .
+                    $batch['batch_id'] . "'"
+                    .
+                    (
+                        (
+                            $batch['batch_id']
+                            ==
+                            ($_POST['batch_id'] ?? '')
+                        )
+                        ? ' selected'
+                        : ''
+                    )
+                    .
+                    ">"
+                    .
+                    htmlspecialchars(
+                        $batch['batch_name']
+                    )
+                    .
+                    "</option>";
+            }
+            ?>
 
-<br><br>
+        </select>
 
-        <label for="semester_id">Semester:</label>
-        <select id="semester_id" name="semester_id" required>
-    <option value="">-- Select Semester --</option>
+    </div>
 
-    <?php
-    $semester_query = "SELECT semester_id, semester_name
-                       FROM semesters
-                       ORDER BY semester_id";
 
-    $semester_result = $conn->query($semester_query);
+    <div class="form-group">
 
-    while ($semester = $semester_result->fetch_assoc()) {
-        echo "<option value='" . $semester['semester_id'] . "'"
-     . (($semester['semester_id'] == ($_POST['semester_id'] ?? '')) ? ' selected' : '')
-     . ">"
-     . htmlspecialchars($semester['semester_name'])
-     . "</option>";
-    }
-    ?>
+        <label for="year_id">Year:</label>
 
-</select>
-        <br><br>
+        <select id="year_id" name="year_id" required>
+
+            <option value="">-- Select Year --</option>
+
+            <?php
+            $year_query = "
+                SELECT year_id, year_name
+                FROM years
+                ORDER BY year_id
+            ";
+
+            $year_result =
+                $conn->query($year_query);
+
+            while (
+                $year =
+                $year_result->fetch_assoc()
+            ) {
+
+                echo "<option value='" .
+                    $year['year_id'] . "'"
+                    .
+                    (
+                        (
+                            $year['year_id']
+                            ==
+                            ($_POST['year_id'] ?? '')
+                        )
+                        ? ' selected'
+                        : ''
+                    )
+                    .
+                    ">"
+                    .
+                    htmlspecialchars(
+                        $year['year_name']
+                    )
+                    .
+                    "</option>";
+            }
+            ?>
+
+        </select>
+
+    </div>
+
+</div>
+
+        <div class="form-group">
+
+    <label for="semester_id">Semester:</label>
+
+    <select id="semester_id" name="semester_id" required>
+
+        <option value="">-- Select Semester --</option>
+
+        <?php
+        $semester_query = "
+            SELECT semester_id, semester_name
+            FROM semesters
+            ORDER BY semester_id
+        ";
+
+        $semester_result =
+            $conn->query($semester_query);
+
+        while (
+            $semester =
+            $semester_result->fetch_assoc()
+        ) {
+
+            echo "<option value='" .
+                $semester['semester_id'] . "'"
+                .
+                (
+                    (
+                        $semester['semester_id']
+                        ==
+                        ($_POST['semester_id'] ?? '')
+                    )
+                    ? ' selected'
+                    : ''
+                )
+                .
+                ">"
+                .
+                htmlspecialchars(
+                    $semester['semester_name']
+                )
+                .
+                "</option>";
+        }
+        ?>
+
+    </select>
+
+</div>
 
         <label>Club Membership:</label>
 <br>
