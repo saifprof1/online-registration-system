@@ -1,7 +1,7 @@
 
 # Online Student Registration System
 
-A web-based student registration system developed for the **Data Management** course at Chandpur Science and Technology University (CSTU).
+A web-based student registration system developed for the **Database Management System** course at Chandpur Science and Technology University (CSTU).
 
 ## Features
 
@@ -44,7 +44,7 @@ PHP · MySQL · HTML · CSS · JavaScript · XAMPP · Git & GitHub
 
 ## Academic Information
 
-- **Course:** Data Management System
+- **Course:** Database Management System
 - **Department:** Information and Communication Technology (ICT)
 - **Institution:** Chandpur Science and Technology University
 
