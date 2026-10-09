@@ -98,6 +98,13 @@
                 width: 100%;
             }
         }
+
+        .university-name {
+    color: #555;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 8px;
+}
     </style>
 </head>
 
@@ -108,6 +115,10 @@
             alt="Chandpur Science and Technology University Logo"
             class="university-logo"
         >
+
+        <p class="university-name">
+    Chandpur Science and Technology University
+</p>
 
         <h1>CSTU Student Registration</h1>
 
