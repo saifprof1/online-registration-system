@@ -105,6 +105,17 @@
     font-weight: bold;
     margin: 0 0 8px;
 }
+
+.home-footer {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: #777;
+    font-size: 13px;
+    padding: 0 10px;
+}
     </style>
 </head>
 
@@ -120,7 +131,7 @@
     Chandpur Science and Technology University
 </p>
 
-        <h1>CSTU Student Registration</h1>
+        <h1>Student Registration</h1>
 
         <p>
             Welcome to the CSTU Student Registration System.
@@ -132,5 +143,9 @@
             <a href="admin.php">Admin Panel</a>
         </div>
     </main>
+
+    <footer class="home-footer">
+    CSTU Student Registration System
+</footer>
 </body>
 </html>
