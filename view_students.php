@@ -20,14 +20,17 @@ $sql = "SELECT
             students.*,
             departments.department_name,
             sessions.session_name,
-            batches.batch_name
+            batches.batch_name,
+            years.Year_name
         FROM students
         LEFT JOIN departments
             ON students.department_id = departments.department_id
         LEFT JOIN sessions
             ON students.session_id = sessions.session_id
         LEFT JOIN batches
-            ON students.batch_id = batches.batch_id";
+            ON students.batch_id = batches.batch_id
+        LEFT JOIN years
+            ON students.year_id = years.Year_id";
 
 $result = $conn->query($sql);
 
@@ -253,7 +256,7 @@ tr:hover {
             <td><?php echo htmlspecialchars($row['department_name'] ?? 'N/A'); ?></td>
             <td><?php echo htmlspecialchars($row['session_name'] ?? 'N/A'); ?></td>
             <td><?php echo htmlspecialchars($row['batch_name'] ?? 'N/A'); ?></td>
-            <td><?php echo htmlspecialchars($row['year_id']); ?></td>
+            <td><?php echo htmlspecialchars($row['Year_name'] ?? 'N/A'); ?></td>
             <td><?php echo htmlspecialchars($row['semester_id']); ?></td>
             <td>
     <?php if (!empty($row['image_path'])): ?>
