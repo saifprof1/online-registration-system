@@ -526,6 +526,32 @@ h2 {
     column-gap: 24px;
     row-gap: 8px;
 }
+
+/* Footer Navigation */
+
+.footer-navigation {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.footer-navigation a {
+    display: inline-block;
+    padding: 10px 18px;
+    background: #1f4e78;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.footer-navigation a:hover {
+    background: #163a5a;
+}
 </style>
 
     <title>Student Registration</title>
@@ -1082,6 +1108,11 @@ while ($club = $club_result->fetch_assoc()) {
 
         </div>
 
+    </div>
+
+        <div class="footer-navigation">
+        <a href="index.php">Home</a>
+        <a href="admin.php">Admin Panel</a>
     </div>
 
     <script>
