@@ -509,6 +509,23 @@ button[type="submit"]:hover {
     font-size: 14px;
     line-height: 1.6;
 }
+
+/* Form Section Spacing */
+
+h2 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-row {
+    column-gap: 24px;
+    row-gap: 8px;
+}
 </style>
 
     <title>Student Registration</title>
