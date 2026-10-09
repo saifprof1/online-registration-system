@@ -495,6 +495,20 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background: #163a5a;
 }
+
+/* Error Message Styling */
+
+.error-message {
+    background: #fff0f0;
+    color: #b42318;
+    border: 1px solid #f5b5b5;
+    border-left: 5px solid #d92d20;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+}
 </style>
 
     <title>Student Registration</title>
