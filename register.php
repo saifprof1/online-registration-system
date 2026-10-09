@@ -346,7 +346,7 @@ body {
 }
 
 .header {
-    background: #1f4e78;
+    background: #1f3b78;
     color: white;
     padding: 28px;
     text-align: center;
