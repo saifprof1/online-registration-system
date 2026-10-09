@@ -441,6 +441,60 @@ button[type="submit"]:hover {
         grid-template-columns: 1fr;
     }
 }
+/* Gender and Club Membership */
+
+input[type="radio"],
+input[type="checkbox"] {
+    accent-color: #1f4e78;
+    cursor: pointer;
+}
+
+input[type="radio"] + label,
+input[type="checkbox"] + label {
+    display: inline;
+    font-weight: normal;
+}
+
+/* Club Membership */
+
+.form-group label {
+    line-height: 1.6;
+}
+
+/* Captcha */
+
+#captcha {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 10px;
+}
+
+/* Student Image */
+
+input[type="file"] {
+    background: #f8f9fa;
+    cursor: pointer;
+}
+
+/* Terms and Conditions */
+
+#terms {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+
+/* Submit Button */
+
+button[type="submit"] {
+    margin-top: 10px;
+    transition: background-color 0.2s ease;
+}
+
+button[type="submit"]:hover {
+    background: #163a5a;
+}
 </style>
 
     <title>Student Registration</title>
