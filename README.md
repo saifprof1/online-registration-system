@@ -1,66 +1,59 @@
-# Online Registration System
 
-A web-based student registration system developed for the **Data Management** course.
+# Online Student Registration System
+
+A web-based student registration system developed for the **Data Management** course at Chandpur Science and Technology University (CSTU).
 
 ## Features
 
-- Student registration form
-- Personal & academic information
-- Dynamic Department, Session & Semester
-- Registration Type selection
-- Student ID validation
-- Duplicate Student ID detection
-- Real-time Student ID availability check
-- Phone & Email validation
+- Student registration with personal and academic information
+- Student ID validation and duplicate detection
+- Phone and email validation
+- Student image upload and CAPTCHA verification
+- Student list with age calculation
+- Student search, update, and delete
+- Dynamic academic information
 - MySQL database integration
-- Database transaction support
 
 ## Technologies
 
-- HTML
-- CSS
-- JavaScript
-- PHP
-- MySQL
-- XAMPP
-- Git & GitHub
+PHP · MySQL · HTML · CSS · JavaScript · XAMPP · Git & GitHub
 
 ## Database
 
-**Database Name:** `online_registration`
+**Database:** `online_registration`
 
-**Tables:**
+**Tables:** `departments`, `sessions`, `semesters`, `batches`, `years`, `students`, `registrations`, `admins`, `clubs`, `student_clubs`
 
-- `departments`
-- `sessions`
-- `semesters`
-- `students`
-- `registrations`
-- `admins`
+## Installation
 
-## Run Locally
+1. Install XAMPP and start Apache and MySQL.
+2. Clone the repository into `htdocs`:
 
-1. Start **Apache** and **MySQL** from XAMPP.
-2. Clone the repository into `htdocs`.
-3. Create the `online_registration` database.
-4. Import `database/database.sql`.
-5. Open:
+   ```bash
+   git clone https://github.com/saifprof1/online-registration-system.git
+   ```
 
-   `http://localhost/online-registration-system/register.php`
+3. Create the `online_registration` database in phpMyAdmin.
+4. Import the project SQL file or your database backup.
+5. Configure the database credentials in `database.php`.
+6. Ensure the `uploads/students/` directory exists and is writable.
 
-## Academic Project
+**Run the project:**
 
-**Course:** Data Base Management System 
+`http://localhost/online-registration-system/`
 
-**Department:** Information and Communication Technology (ICT)  
+## Academic Information
 
-**Institution:** Chandpur Science and Technology University
+- **Course:** Data Management System
+- **Department:** Information and Communication Technology (ICT)
+- **Institution:** Chandpur Science and Technology University
 
 ## Developer
 
 **Muhammad Saif**  
-ICT Undergraduate | Chandpur Science and Technology University
+ICT Undergraduate | CSTU  
+[GitHub Profile](https://github.com/saifprof1)
 
 ## Status
 
-🚧 **Under Development**
+🚧 Under Development
